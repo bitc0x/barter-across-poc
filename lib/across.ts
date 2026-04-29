@@ -4,7 +4,9 @@ export interface AcrossQuote {
   inputAmount: string;
   outputAmount: string;
   totalRelayFee: { total: string; pct: string };
-  estimatedFillTimeSec: number;
+  expectedFillTimeSec: number;
+  estimatedFillTimeSec?: number; // legacy alias
+  isAmountTooLow?: boolean;
   spokePoolAddress: string;
   depositId?: string;
 }
