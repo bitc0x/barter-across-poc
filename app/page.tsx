@@ -3,14 +3,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { BarterLogoMark, AcrossLogoMark } from "@/components/Logos";
 
-// Stats from docs.across.to (verified April 2026)
-const STATS = [
-  { n: "$35B+", l: "Bridged" },
-  { n: "<2s", l: "Fill time" },
-  { n: "0", l: "Exploits" },
-  { n: "$41M", l: "Raised (Paradigm-led)" },
-];
-
 const PITCH = [
   {
     tag: "The gap",
@@ -149,18 +141,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats from docs.across.to */}
-      <section className="px-6 pb-20 max-w-6xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {STATS.map((s) => (
-            <div key={s.n} className="bg-barter-surface border border-barter-border rounded-xl p-5">
-              <div className="text-3xl font-bold font-mono text-across-green mb-1">{s.n}</div>
-              <div className="text-sm text-barter-muted">{s.l}</div>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-barter-muted font-mono mt-3 text-right">Source: docs.across.to</p>
-      </section>
+
 
       {/* The pitch */}
       <section id="pitch" className="px-6 pb-24 max-w-6xl mx-auto">
