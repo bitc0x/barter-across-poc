@@ -47,8 +47,8 @@ export default function SwapPage() {
   // Cross-chain state
   const [originChain, setOriginChain] = useState<ChainInfo>(CHAINS[1]);
   const [destChain, setDestChain]     = useState<ChainInfo>(CHAINS[0]);
-  const [ccSellToken, setCcSellToken] = useState<TokenInfo>(TOKENS[42161][0]);
-  const [ccBuyToken, setCcBuyToken]   = useState<TokenInfo>(TOKENS[1][0]);
+  const [ccSellToken, setCcSellToken] = useState<TokenInfo>(TOKENS[42161][0]); // USDC on Arb
+  const [ccBuyToken, setCcBuyToken]   = useState<TokenInfo>(TOKENS[1][1]);   // WETH on Eth
   const [ccAmount, setCcAmount] = useState("");
   const [ccQuote, setCcQuote]   = useState<CCQuote | null>(null);
   const [ccState, setCcState]   = useState<QuoteState>("idle");
@@ -240,6 +240,8 @@ export default function SwapPage() {
               isDark={isDark} tabActive={tabActive} textPri={textPri} textMut={textMut}
               badge={<AcrossLogoMark size={14} />}
               badgeLabel="Across"
+              badgeLabelColor={isDark ? "#5BF3A0" : "#0a5c35"}
+              badgeLabelBg={isDark ? "rgba(91,243,160,0.12)" : "rgba(0,100,60,0.1)"}
             />
           </div>
         </div>
@@ -306,10 +308,11 @@ export default function SwapPage() {
 }
 
 // ── Tab pill ────────────────────────────────────────────────────────
-function TabPill({ label, active, onClick, isDark, tabActive, textPri, textMut, badge, badgeLabel }: {
+function TabPill({ label, active, onClick, isDark, tabActive, textPri, textMut, badge, badgeLabel, badgeLabelColor, badgeLabelBg }: {
   label: string; active: boolean; onClick: () => void;
   isDark: boolean; tabActive: string; textPri: string; textMut: string;
   badge?: React.ReactNode; badgeLabel?: string;
+  badgeLabelColor?: string; badgeLabelBg?: string;
 }) {
   return (
     <button
@@ -331,8 +334,8 @@ function TabPill({ label, active, onClick, isDark, tabActive, textPri, textMut, 
           {badge}
           <span style={{
             fontSize: 10, fontWeight: 600,
-            color: "#5BF3A0",
-            background: isDark ? "rgba(91,243,160,0.12)" : "rgba(91,243,160,0.2)",
+            color: badgeLabelColor || (isDark ? "#5BF3A0" : "#0a5c35"),
+            background: badgeLabelBg || (isDark ? "rgba(91,243,160,0.12)" : "rgba(0,100,60,0.1)"),
             padding: "1px 6px", borderRadius: 4,
           }}>{badgeLabel}</span>
         </span>
@@ -493,7 +496,7 @@ function SameChainPanel({
 
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
         {/* Three-panel horizontal layout */}
-        <div style={{ display: "flex", alignItems: "stretch", gap: 0, position: "relative" }}>
+        <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
 
           {/* Sell card */}
           <div style={{
@@ -583,26 +586,18 @@ function SameChainPanel({
             </div>
           </div>
 
-          {/* Action card */}
-          <div style={{ width: 56, flexShrink: 0 }} />
+          {/* Action card — sits as 3rd proper column, not absolute overlay */}
           <div style={{
-            position: "absolute", right: 0, top: 0, bottom: 0,
-            width: 130, background: ctaBg, borderRadius: cardRadius,
+            width: 130, flexShrink: 0, background: ctaBg, borderRadius: cardRadius,
+            minHeight: cardH,
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", gap: 8,
-          }} onClick={hasAmount ? undefined : undefined}>
-            <div style={{
-              width: 32, height: 32, borderRadius: 16,
-              border: `2px solid ${ctaText}`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              opacity: 0.7,
+            cursor: "pointer", gap: 0,
+          }}>
+            <span style={{
+              fontSize: 16, fontWeight: 700, color: ctaText,
+              textAlign: "center", lineHeight: 1.3, padding: "0 12px",
             }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={ctaText} strokeWidth={2}>
-                <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
-              </svg>
-            </div>
-            <span style={{ fontSize: 16, fontWeight: 700, color: ctaText, textAlign: "center", lineHeight: 1.2 }}>
-              {hasAmount ? "Swap" : "Connect\nwallet"}
+              Connect wallet
             </span>
           </div>
         </div>
@@ -705,9 +700,7 @@ function CrossChainPanel({
       )}
 
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "stretch", gap: 0, position: "relative" }}>
-
-          {/* Origin card */}
+        <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
           <div style={{
             flex: "1 1 0", background: ccSellBg, borderRadius: cardRadius,
             padding: 24, minHeight: cardH,
@@ -792,35 +785,29 @@ function CrossChainPanel({
             </div>
           </div>
 
-          {/* Action card */}
-          <div style={{ width: 56, flexShrink: 0 }} />
+          {/* Action card — 3rd column */}
           <div style={{
-            position: "absolute", right: 0, top: 0, bottom: 0,
-            width: 130, background: ctaBg, borderRadius: cardRadius,
+            width: 130, flexShrink: 0, background: ctaBg, borderRadius: cardRadius,
+            minHeight: cardH,
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            cursor: !ccAmount ? "default" : "pointer", gap: 8,
-            opacity: !ccAmount ? 0.5 : 1,
+            cursor: !ccAmount ? "default" : "pointer",
+            opacity: 1,
             transition: "all 0.2s ease",
           }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: 16,
-              border: `2px solid ${ctaText}`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              opacity: 0.7,
+            {ccState === "success" && (
+              <div style={{ marginBottom: 8 }}>
+                <AcrossLogoMark size={24} />
+              </div>
+            )}
+            <span style={{
+              fontSize: 15, fontWeight: 700, color: ctaText,
+              textAlign: "center", lineHeight: 1.35, padding: "0 12px",
             }}>
-              {ccState === "success" ? (
-                <AcrossLogoMark size={18} />
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={ctaText} strokeWidth={2}>
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              )}
-            </div>
-            <span style={{ fontSize: 14, fontWeight: 700, color: ctaText, textAlign: "center", lineHeight: 1.3, padding: "0 8px" }}>
-              {!ccAmount ? "Enter\namount"
+              {!ccAmount ? "Enter amount"
                 : ccState === "loading" ? "Routing..."
-                : ccState === "success" ? `Bridge\n${originChain.shortName} to ${destChain.shortName}`
-                : "Connect\nwallet"}
+                : ccState === "success" ? `Bridge\n${originChain.shortName} to\n${destChain.shortName}`
+                : ccState === "error" ? "No route"
+                : "Connect wallet"}
             </span>
           </div>
         </div>
