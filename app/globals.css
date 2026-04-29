@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+body {
+  background: #0a0b0d;
+  color: #e8eaf0;
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #111318; }
+::-webkit-scrollbar-thumb { background: #2a2d38; border-radius: 2px; }
+
+/* Selection */
+::selection { background: rgba(91, 243, 160, 0.2); }
+
+/* Token input no spinner */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type="number"] { -moz-appearance: textfield; }
+
+@layer utilities {
+  .glass {
+    background: rgba(22, 24, 31, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .glow-green {
+    box-shadow: 0 0 20px rgba(91, 243, 160, 0.15);
+  }
+  .glow-orange {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+  }
+  .border-subtle {
+    border: 1px solid #1e2028;
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
