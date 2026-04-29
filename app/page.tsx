@@ -3,11 +3,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { BarterLogoMark, AcrossLogoMark } from "@/components/Logos";
 
+// Stats from docs.across.to (verified April 2026)
 const STATS = [
-  { n: "$30B+", l: "Cumulative volume bridged" },
-  { n: "Sub-60s", l: "Typical fill time on L2s" },
-  { n: "40+", l: "dApps integrated" },
-  { n: "Zero", l: "Security exploits ever" },
+  { n: "$35B+", l: "Bridged" },
+  { n: "<2s", l: "Fill time" },
+  { n: "0", l: "Exploits" },
+  { n: "$41M", l: "Raised (Paradigm-led)" },
 ];
 
 const PITCH = [
@@ -20,7 +21,7 @@ const PITCH = [
   {
     tag: "The rails",
     title: "Intent-based. Native assets. Sub-dollar fees.",
-    body: "Across uses an intents architecture: relayers fund the destination instantly, UMA's optimistic oracle settles on-chain. Users receive canonical tokens in seconds. No lock-and-mint risk. No wrapped asset exposure. The fastest L2 bridge by fill time.",
+    body: "Across uses an intents architecture: relayers fund the destination instantly, UMA's optimistic oracle settles on-chain. Users receive canonical tokens in seconds. No lock-and-mint risk. No wrapped asset exposure. The fastest crosschain bridge by fill time.",
     accent: "green",
   },
   {
@@ -31,36 +32,64 @@ const PITCH = [
   },
 ];
 
-const WHY_PROPS = [
+// Across credentials - all facts from docs.across.to, across.to, and official publications
+const ACROSS_CREDENTIALS = [
+  {
+    stat: "$35B+",
+    label: "Bridged",
+    sub: "Source: docs.across.to",
+    col: "green",
+  },
+  {
+    stat: "<2s",
+    label: "Fill time",
+    sub: "Fastest in the category",
+    col: "green",
+  },
+  {
+    stat: "0",
+    label: "Exploits",
+    sub: "18 OpenZeppelin audits",
+    col: "green",
+  },
+  {
+    stat: "$41M",
+    label: "Raised",
+    sub: "Paradigm, Bain Capital Crypto, Coinbase Ventures, Multicoin",
+    col: "blue",
+  },
+];
+
+const ACROSS_PROPS = [
   {
     icon: "⚡",
-    title: "Sub-60s fills on L2s",
-    body: "Relayers front capital at the destination instantly. Users receive funds before origin chain finality. Across publicly claims under-1-minute fills on all major routes.",
+    title: "Under 2 seconds fill time",
+    body: "The fastest crosschain infrastructure for builders, per Across's own docs. Relayers compete to fill instantly at destination before origin chain finalises.",
   },
   {
     icon: "🔒",
-    title: "No wrapped asset risk",
-    body: "Intent-based settlement means no lock-and-mint. Relayers use their own inventory. Users always receive canonical tokens, never bridge-specific IOUs.",
+    title: "Zero exploits. Ever.",
+    body: "18 comprehensive audits by OpenZeppelin. Only intent bridge with a perfect security record at $35B+ volume. OpenZeppelin published a dedicated case study.",
   },
   {
     icon: "💰",
-    title: "Sub-dollar stablecoin fees",
-    body: "Relayer competition drives fees to their floor. USDC transfers from Arbitrum to Base regularly clear under $0.50 in total cost.",
+    title: "Bridge 1 ETH for under $1",
+    body: "Relayer competition drives fees to their floor. Stablecoin transfers on major L2 routes clear for cents. No protocol fee on selected routes.",
   },
   {
     icon: "🔧",
-    title: "API-first, single call",
-    body: "One POST to /swap/approval handles the full cross-chain plus swap flow. No multi-step SDK required. Integrators at Kraken Ink, Soneium, and Hyperliquid are live.",
+    title: "Single API call, any chain",
+    body: "One POST handles the full crosschain plus swap flow. Integrators include Uniswap, MetaMask, Kraken Ink, PancakeSwap, Soneium, and Hyperliquid.",
+  },
+  {
+    icon: "📐",
+    title: "ERC-7683 co-author",
+    body: "Co-authored with Uniswap Labs. The emerging standard for crosschain intents already adopted by Arbitrum, Base, and Optimism. Backed by 70+ projects.",
   },
   {
     icon: "🧩",
     title: "Custom actions at destination",
-    body: "Arbitrary on-destination logic via MulticallHandler: bridge and stake, bridge and swap, bridge and deposit, all in one user transaction.",
-  },
-  {
-    icon: "🏆",
-    title: "$30B+ bridged, zero exploits",
-    body: "Largest intent bridge by volume. 18 audits by OpenZeppelin. Perfect security record since launch, confirmed by OpenZeppelin's own published case study.",
+    body: "MulticallHandler enables arbitrary on-destination logic: bridge and stake, bridge and swap, bridge and deposit, all in a single user transaction.",
   },
 ];
 
@@ -69,27 +98,30 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-barter-bg">
+
+      {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 glass border-b border-barter-border">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <BarterLogoMark size={26} />
+            <BarterLogoMark size={24} />
             <span className="font-semibold text-sm text-barter-text">Barter</span>
           </div>
           <span className="text-barter-muted text-sm font-mono px-1">x</span>
           <div className="flex items-center gap-2">
-            <AcrossLogoMark size={26} />
+            <AcrossLogoMark size={24} />
             <span className="font-semibold text-sm text-barter-text">Across</span>
           </div>
         </div>
         <div className="flex items-center gap-6">
           <a href="#pitch" className="text-sm text-barter-sub hover:text-barter-text transition-colors hidden md:block">The Deal</a>
-          <a href="#why-across" className="text-sm text-barter-sub hover:text-barter-text transition-colors hidden md:block">Why Across</a>
+          <a href="#across" className="text-sm text-barter-sub hover:text-barter-text transition-colors hidden md:block">Why Across</a>
           <Link href="/swap" className="text-sm bg-barter-orange text-white font-medium px-4 py-2 rounded-lg hover:bg-barter-orange-dim transition-colors">
             Live Demo
           </Link>
         </div>
       </nav>
 
+      {/* Hero */}
       <section className="pt-36 pb-20 px-6 max-w-6xl mx-auto">
         <div className="inline-flex items-center gap-2 bg-barter-surface border border-barter-border rounded-full px-4 py-1.5 text-xs font-mono text-across-green mb-10">
           <span className="w-1.5 h-1.5 rounded-full bg-across-green animate-pulse2 inline-block" />
@@ -101,7 +133,7 @@ export default function Home() {
           <span className="text-barter-orange">cross-chain.</span>
         </h1>
         <p className="text-xl text-barter-sub max-w-2xl mb-4 leading-relaxed">
-          Barter has the best same-chain execution on Ethereum. Across has the fastest, cheapest cross-chain rails on L2s. This is what they look like together.
+          Barter has the best same-chain execution on Ethereum. Across has the fastest, cheapest crosschain rails on L2s. This is what they look like together.
         </p>
         <p className="text-sm text-barter-muted max-w-2xl mb-12 font-mono">
           Functional proof of concept by Across Protocol BD. The cross-chain tab in the swap interface is wired to the live Across API.
@@ -117,6 +149,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Stats from docs.across.to */}
       <section className="px-6 pb-20 max-w-6xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {STATS.map((s) => (
@@ -126,13 +159,17 @@ export default function Home() {
             </div>
           ))}
         </div>
+        <p className="text-xs text-barter-muted font-mono mt-3 text-right">Source: docs.across.to</p>
       </section>
 
+      {/* The pitch */}
       <section id="pitch" className="px-6 pb-24 max-w-6xl mx-auto">
         <div className="mb-12">
           <div className="text-xs font-mono text-barter-orange tracking-widest uppercase mb-3">The partnership</div>
           <h2 className="text-4xl font-bold text-barter-text mb-4">Two-sided. Structural. Exclusive.</h2>
-          <p className="text-barter-sub text-lg max-w-2xl">Not a generic bridge widget. A mutual infrastructure deal where both protocols gain something no competitor can replicate.</p>
+          <p className="text-barter-sub text-lg max-w-2xl">
+            Not a generic bridge widget. A mutual infrastructure deal where both protocols gain something no competitor can replicate.
+          </p>
         </div>
         <div className="grid md:grid-cols-3 gap-4">
           {PITCH.map((p, i) => (
@@ -160,14 +197,33 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="why-across" className="px-6 pb-24 max-w-6xl mx-auto">
+      {/* Across credentials - the selling section */}
+      <section id="across" className="px-6 pb-24 max-w-6xl mx-auto">
         <div className="mb-12">
           <div className="text-xs font-mono text-across-green tracking-widest uppercase mb-3">Why Across</div>
-          <h2 className="text-4xl font-bold text-barter-text mb-4">The intent bridge built for integrators.</h2>
-          <p className="text-barter-sub text-lg max-w-2xl">Not a UI play. Infrastructure designed from day one for protocols like Barter to embed.</p>
+          <h2 className="text-4xl font-bold text-barter-text mb-3">
+            $35B bridged. Under 2 seconds. Zero exploits.
+          </h2>
+          <p className="text-barter-sub text-lg max-w-2xl">
+            The only crosschain intents protocol in production. The fastest crosschain infrastructure for builders.
+          </p>
+          <p className="text-xs text-barter-muted font-mono mt-2">All metrics from docs.across.to</p>
         </div>
+
+        {/* Large stat strip */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+          {ACROSS_CREDENTIALS.map((c) => (
+            <div key={c.stat} className={`bg-barter-card border rounded-xl p-5 ${c.col === "green" ? "border-across-green/30" : "border-across-blue/30"}`}>
+              <div className={`text-4xl font-bold font-mono mb-1 ${c.col === "green" ? "text-across-green" : "text-across-blue"}`}>{c.stat}</div>
+              <div className="text-sm font-medium text-barter-text mb-1">{c.label}</div>
+              <div className="text-xs text-barter-muted leading-relaxed">{c.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Properties grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {WHY_PROPS.map((p, i) => (
+          {ACROSS_PROPS.map((p, i) => (
             <div key={i} className="bg-barter-surface border border-barter-border rounded-xl p-5 hover:border-across-green/40 transition-colors">
               <div className="text-2xl mb-3">{p.icon}</div>
               <div className="font-semibold text-barter-text mb-2 text-sm">{p.title}</div>
@@ -177,11 +233,14 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CTA */}
       <section className="px-6 pb-32 max-w-6xl mx-auto">
         <div className="bg-barter-card border border-across-green/20 rounded-3xl p-10 text-center glow-green">
           <div className="text-xs font-mono text-across-green tracking-widest uppercase mb-4">Ready to ship</div>
           <h2 className="text-4xl font-bold text-barter-text mb-4">The demo is live. The integration is ready.</h2>
-          <p className="text-barter-sub mb-8 max-w-xl mx-auto">The cross-chain tab in the swap interface hits the real Across API. One call to enable it in Barter's production frontend.</p>
+          <p className="text-barter-sub mb-8 max-w-xl mx-auto">
+            The cross-chain tab in the swap interface hits the real Across API. One call to enable it in Barter's production frontend.
+          </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/swap" className="inline-flex items-center gap-2 bg-across-green text-barter-bg font-bold px-8 py-3.5 rounded-xl hover:bg-across-green-dim transition-all">
               Try the live demo

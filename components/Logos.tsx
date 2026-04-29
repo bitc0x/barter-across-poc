@@ -1,10 +1,9 @@
-// Barter logo mark - inlined from the official barter.svg (FF8C20 orange)
-// Inlined to avoid broken image from CORS / CSP on external SVG fetch
+// Barter logo mark - inlined from official barter.svg (FF8C20 orange)
 export function BarterLogoMark({ size = 28 }: { size?: number }) {
   return (
     <svg
       width={size}
-      height={size * (24 / 19)}
+      height={Math.round(size * (24 / 19))}
       viewBox="0 0 19 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -20,23 +19,54 @@ export function BarterLogoMark({ size = 28 }: { size?: number }) {
   );
 }
 
-// Across logo mark - matches uploaded brand asset exactly:
-// Mint/teal circle (#5BF3A0), two thick dark diagonal bars forming an X
-// The bars are rotated rectangles, not lines, matching the chunky brand mark
+// Across logo mark - matches docs.across.to exactly:
+// Teal/mint square with rounded corners, dotted/pixel border effect, X cross inside
+// The mark is square (not circle), with a pixel-art style dashed border
 export function AcrossLogoMark({ size = 28 }: { size?: number }) {
+  const s = size;
   return (
     <svg
-      width={size}
-      height={size}
+      width={s}
+      height={s}
       viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       style={{ display: "block", flexShrink: 0 }}
     >
-      <circle cx="50" cy="50" r="50" fill="#5BF3A0" />
-      {/* X bars - thick rounded strokes matching the brand mark */}
-      <line x1="30" y1="30" x2="70" y2="70" stroke="#1C1C1C" strokeWidth="14" strokeLinecap="round" />
-      <line x1="70" y1="30" x2="30" y2="70" stroke="#1C1C1C" strokeWidth="14" strokeLinecap="round" />
+      {/* Outer square with rounded corners - teal fill */}
+      <rect x="4" y="4" width="92" height="92" rx="14" fill="#5BF3A0" />
+      {/* Pixel-dot border: small squares at regular intervals around the perimeter */}
+      {/* Top edge dots */}
+      <rect x="4" y="0" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="20" y="0" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="36" y="0" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="52" y="0" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="68" y="0" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="84" y="0" width="8" height="4" rx="1" fill="#5BF3A0" />
+      {/* Bottom edge dots */}
+      <rect x="4" y="96" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="20" y="96" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="36" y="96" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="52" y="96" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="68" y="96" width="8" height="4" rx="1" fill="#5BF3A0" />
+      <rect x="84" y="96" width="8" height="4" rx="1" fill="#5BF3A0" />
+      {/* Left edge dots */}
+      <rect x="0" y="4" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="0" y="20" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="0" y="36" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="0" y="52" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="0" y="68" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="0" y="84" width="4" height="8" rx="1" fill="#5BF3A0" />
+      {/* Right edge dots */}
+      <rect x="96" y="4" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="96" y="20" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="96" y="36" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="96" y="52" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="96" y="68" width="4" height="8" rx="1" fill="#5BF3A0" />
+      <rect x="96" y="84" width="4" height="8" rx="1" fill="#5BF3A0" />
+      {/* X cross - thick dark bars */}
+      <line x1="26" y1="26" x2="74" y2="74" stroke="#0d1a0d" strokeWidth="13" strokeLinecap="round" />
+      <line x1="74" y1="26" x2="26" y2="74" stroke="#0d1a0d" strokeWidth="13" strokeLinecap="round" />
     </svg>
   );
 }
