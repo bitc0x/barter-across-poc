@@ -24,34 +24,15 @@ const PITCH = [
   },
 ];
 
-// Across credentials - all facts from docs.across.to, across.to, and official publications
+// All stats from docs.across.to (verified April 2026)
 const ACROSS_CREDENTIALS = [
-  {
-    stat: "$35B+",
-    label: "Bridged",
-    sub: "Source: docs.across.to",
-    col: "green",
-  },
-  {
-    stat: "<2s",
-    label: "Fill time",
-    sub: "Fastest in the category",
-    col: "green",
-  },
-  {
-    stat: "0",
-    label: "Exploits",
-    sub: "18 OpenZeppelin audits",
-    col: "green",
-  },
-  {
-    stat: "$41M",
-    label: "Raised",
-    sub: "Paradigm, Bain Capital Crypto, Coinbase Ventures, Multicoin",
-    col: "blue",
-  },
+  { stat: "$35B+", label: "Bridged", sub: "Source: docs.across.to", col: "green" },
+  { stat: "<2s",   label: "Fill time", sub: "Fastest in the category", col: "green" },
+  { stat: "0",     label: "Exploits", sub: "18 OpenZeppelin audits", col: "green" },
+  { stat: "$41M",  label: "Raised", sub: "Paradigm, Bain Capital Crypto, Coinbase Ventures, Multicoin", col: "blue" },
 ];
 
+// 6 cards: clean 2x3 grid on desktop, no orphan
 const ACROSS_PROPS = [
   {
     icon: "⚡",
@@ -66,28 +47,31 @@ const ACROSS_PROPS = [
   {
     icon: "🏛️",
     title: "Fully decentralized. Non-custodial.",
-    body: "No locked funds, no admin keys, no multisig honeypot. Relayers front their own capital for each transfer. Users never give up custody of assets at any point.",
+    body: "No locked funds, no admin keys, no multisig honeypot. Relayers front their own capital per transfer. Users never give up custody of assets at any point.",
   },
   {
     icon: "💰",
     title: "Bridge 1 ETH for under $1",
-    body: "Relayer competition drives fees to their floor. Stablecoin transfers on major L2 routes clear for cents. No protocol fee on selected routes.",
+    body: "Relayer competition drives fees to their floor. Stablecoin transfers on major L2 routes clear for cents. Confirmed on Across's own homepage.",
   },
   {
     icon: "🔧",
     title: "Single API call, any chain",
-    body: "One POST handles the full crosschain plus swap flow. Integrators include Uniswap, MetaMask, Kraken Ink, PancakeSwap, Soneium, and Hyperliquid.",
+    body: "One POST handles the full crosschain plus swap flow. Live integrators include Uniswap, MetaMask, Kraken Ink, PancakeSwap, Soneium, and Hyperliquid.",
   },
   {
     icon: "📐",
     title: "ERC-7683 co-author",
-    body: "Co-authored with Uniswap Labs. The emerging standard for crosschain intents already adopted by Arbitrum, Base, and Optimism. Backed by 70+ projects.",
+    body: "Co-authored with Uniswap Labs. The standard for crosschain intents, already adopted by Arbitrum, Base, and Optimism as major L2s.",
   },
-  {
-    icon: "🧩",
-    title: "Custom actions at destination",
-    body: "MulticallHandler enables arbitrary on-destination logic: bridge and stake, bridge and swap, bridge and deposit, all in a single user transaction.",
-  },
+];
+
+const SECURITY_ROWS = [
+  { label: "Custody model",  across: "Non-custodial always",    others: "Funds locked in contract" },
+  { label: "Admin control",  across: "None. Permissionless",    others: "Multisig or admin keys" },
+  { label: "Asset type",     across: "Canonical tokens only",   others: "Wrapped representations" },
+  { label: "Failure model",  across: "1-of-N honest relayer",   others: "M-of-N validators" },
+  { label: "Exploit history",across: "Zero across $35B+",       others: "$2.9B lost industry-wide" },
 ];
 
 export default function Home() {
@@ -111,7 +95,7 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-6">
           <a href="#pitch" className="text-sm text-barter-sub hover:text-barter-text transition-colors hidden md:block">The Deal</a>
-          <a href="#across" className="text-sm text-barter-sub hover:text-barter-text transition-colors hidden md:block">Why Across</a>
+          <a href="#why-across" className="text-sm text-barter-sub hover:text-barter-text transition-colors hidden md:block">Why Across</a>
           <Link href="/swap" className="text-sm bg-barter-orange text-white font-medium px-4 py-2 rounded-lg hover:bg-barter-orange-dim transition-colors">
             Live Demo
           </Link>
@@ -145,8 +129,6 @@ export default function Home() {
           </a>
         </div>
       </section>
-
-
 
       {/* The pitch */}
       <section id="pitch" className="px-6 pb-24 max-w-6xl mx-auto">
@@ -183,9 +165,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Decentralization callout */}
+      {/* Security architecture callout */}
       <section className="px-6 pb-16 max-w-6xl mx-auto">
-        <div className="bg-barter-card border border-barter-border rounded-2xl p-8 grid md:grid-cols-2 gap-8 items-center">
+        <div className="bg-barter-card border border-barter-border rounded-2xl p-8 grid md:grid-cols-2 gap-10 items-start">
           <div>
             <div className="text-xs font-mono text-across-green tracking-widest uppercase mb-3">Security architecture</div>
             <h2 className="text-2xl font-bold text-barter-text mb-4 leading-snug">
@@ -195,30 +177,33 @@ export default function Home() {
               Most bridges lock user funds in smart contracts, creating a single target worth hundreds of millions. Across has no locked funds. Relayers front their own capital for each transfer, eliminating the honeypot entirely.
             </p>
             <p className="text-barter-sub text-sm leading-relaxed">
-              No multisig that can be compromised. No validators that can collude. No wrapped assets that can be minted to zero. Users stay in full custody of their assets throughout. Security through architecture, not through trust.
+              No multisig that can be compromised. No validators that can collude. No wrapped assets that can be minted to zero. Users stay in full custody throughout. Security through architecture, not through trust.
             </p>
           </div>
-          <div className="space-y-3">
-            {[
-              { label: "Custody model", across: "Non-custodial always", others: "Funds locked in contract", win: true },
-              { label: "Admin control", across: "None. Fully permissionless", others: "Multisig or admin keys", win: true },
-              { label: "Asset type", across: "Canonical tokens only", others: "Wrapped representations", win: true },
-              { label: "Failure mode", across: "1-of-N honest relayer", others: "M-of-N validators", win: true },
-              { label: "Exploit history", across: "Zero, across $35B+", others: "$2.9B lost industry-wide", win: true },
-            ].map((row) => (
-              <div key={row.label} className="grid grid-cols-3 gap-2 text-xs">
-                <span className="text-barter-muted font-mono">{row.label}</span>
-                <span className="text-across-green font-medium">{row.across}</span>
-                <span className="text-barter-muted line-through">{row.others}</span>
+          <div>
+            <div className="space-y-0 divide-y divide-barter-border">
+              <div className="grid grid-cols-3 gap-3 py-2.5 text-[11px] font-mono text-barter-muted">
+                <span></span>
+                <span className="text-across-green font-semibold">Across</span>
+                <span>Industry</span>
               </div>
-            ))}
-            <p className="text-[10px] text-barter-muted font-mono pt-1">Sources: across.to/blog, defillama.com/hacks</p>
+              {SECURITY_ROWS.map((row) => (
+                <div key={row.label} className="grid grid-cols-3 gap-3 py-2.5 text-xs items-start">
+                  <span className="text-barter-muted font-mono text-[11px] pt-0.5">{row.label}</span>
+                  <span className="text-across-green font-medium leading-tight">{row.across}</span>
+                  <span className="text-barter-muted line-through leading-tight">{row.others}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-barter-muted font-mono mt-3">
+              Sources: across.to/blog/why-across-has-never-been-hacked · defillama.com/hacks
+            </p>
           </div>
         </div>
       </section>
 
-
-      <section id="across" className="px-6 pb-24 max-w-6xl mx-auto">
+      {/* Why Across */}
+      <section id="why-across" className="px-6 pb-24 max-w-6xl mx-auto">
         <div className="mb-12">
           <div className="text-xs font-mono text-across-green tracking-widest uppercase mb-3">Why Across</div>
           <h2 className="text-4xl font-bold text-barter-text mb-3">
@@ -230,7 +215,6 @@ export default function Home() {
           <p className="text-xs text-barter-muted font-mono mt-2">All metrics from docs.across.to</p>
         </div>
 
-        {/* Large stat strip */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
           {ACROSS_CREDENTIALS.map((c) => (
             <div key={c.stat} className={`bg-barter-card border rounded-xl p-5 ${c.col === "green" ? "border-across-green/30" : "border-across-blue/30"}`}>
@@ -241,7 +225,6 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Properties grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
           {ACROSS_PROPS.map((p, i) => (
             <div key={i} className="bg-barter-surface border border-barter-border rounded-xl p-5 hover:border-across-green/40 transition-colors">
