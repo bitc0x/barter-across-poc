@@ -1,14 +1,12 @@
 export const ACROSS_API = "https://app.across.to/api";
 
-export interface AcrossQuote {
-  inputAmount: string;
-  outputAmount: string;
-  totalRelayFee: { total: string; pct: string };
-  expectedFillTimeSec: number;
-  estimatedFillTimeSec?: number; // legacy alias
-  isAmountTooLow?: boolean;
-  spokePoolAddress: string;
-  depositId?: string;
+// ── Types ─────────────────────────────────────────────────────────────
+
+export interface ChainInfo {
+  chainId: number;
+  name: string;
+  shortName: string;
+  logoUrl: string;
 }
 
 export interface TokenInfo {
@@ -17,57 +15,139 @@ export interface TokenInfo {
   address: string;
   decimals: number;
   chainId: number;
-  logoURI?: string;
+  logoUrl: string;
 }
 
-export interface ChainInfo {
-  chainId: number;
-  name: string;
-  shortName: string;
-  logoURI?: string;
+// Swap API response - /swap/approval
+export interface SwapQuote {
+  expectedOutputAmount: string;   // raw units of output token
+  minOutputAmount: string;        // raw units, after slippage
+  expectedFillTime: number;       // seconds
+  fees: {
+    total: {
+      amount: string;             // raw units of input token
+      amountUsd: string;
+      pct: string;                // 1e18 = 100%
+    };
+  };
+  swapTx: {
+    to: string;
+    data: string;
+    value: string;
+    from?: string;
+    gas?: string;
+    chainId: number;
+  } | null;
+  outputToken: {
+    symbol: string;
+    decimals: number;
+    address: string;
+    chainId: number;
+  };
+  inputToken: {
+    symbol: string;
+    decimals: number;
+    address: string;
+    chainId: number;
+  };
+  id: string;
+  quoteExpiryTimestamp: number;
 }
 
-export const CHAINS: ChainInfo[] = [
-  { chainId: 1, name: "Ethereum", shortName: "ETH" },
-  { chainId: 42161, name: "Arbitrum", shortName: "ARB" },
-  { chainId: 8453, name: "Base", shortName: "BASE" },
-  { chainId: 10, name: "Optimism", shortName: "OP" },
-  { chainId: 137, name: "Polygon", shortName: "MATIC" },
-];
+// ── Logo URL helpers ──────────────────────────────────────────────────
 
-export const TOKENS: Record<number, TokenInfo[]> = {
-  1: [
-    { symbol: "USDC", name: "USD Coin", address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", decimals: 6, chainId: 1 },
-    { symbol: "WETH", name: "Wrapped Ether", address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", decimals: 18, chainId: 1 },
-    { symbol: "USDT", name: "Tether USD", address: "0xdAC17F958D2ee523a2206206994597C13D831ec7", decimals: 6, chainId: 1 },
-    { symbol: "DAI", name: "Dai", address: "0x6B175474E89094C44Da98b954EedeAC495271d0F", decimals: 18, chainId: 1 },
-    { symbol: "WBTC", name: "Wrapped BTC", address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", decimals: 8, chainId: 1 },
-  ],
-  42161: [
-    { symbol: "USDC", name: "USD Coin", address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", decimals: 6, chainId: 42161 },
-    { symbol: "WETH", name: "Wrapped Ether", address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1", decimals: 18, chainId: 42161 },
-    { symbol: "USDT", name: "Tether USD", address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9", decimals: 6, chainId: 42161 },
-    { symbol: "DAI", name: "Dai", address: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1", decimals: 18, chainId: 42161 },
-  ],
-  8453: [
-    { symbol: "USDC", name: "USD Coin", address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", decimals: 6, chainId: 8453 },
-    { symbol: "WETH", name: "Wrapped Ether", address: "0x4200000000000000000000000000000000000006", decimals: 18, chainId: 8453 },
-    { symbol: "DAI", name: "Dai", address: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb", decimals: 18, chainId: 8453 },
-  ],
-  10: [
-    { symbol: "USDC", name: "USD Coin", address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85", decimals: 6, chainId: 10 },
-    { symbol: "WETH", name: "Wrapped Ether", address: "0x4200000000000000000000000000000000000006", decimals: 18, chainId: 10 },
-    { symbol: "DAI", name: "Dai", address: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1", decimals: 18, chainId: 10 },
-  ],
-  137: [
-    { symbol: "USDC", name: "USD Coin", address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", decimals: 6, chainId: 137 },
-    { symbol: "WETH", name: "Wrapped Ether", address: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619", decimals: 18, chainId: 137 },
-    { symbol: "USDT", name: "Tether USD", address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", decimals: 6, chainId: 137 },
-  ],
-};
+// GitHub blob URLs are not directly renderable - convert to raw
+export function toRawLogoUrl(url: string): string {
+  if (!url) return "";
+  if (url.includes("github.com") && url.includes("/blob/")) {
+    return url
+      .replace("https://github.com/", "https://raw.githubusercontent.com/")
+      .replace("/blob/", "/");
+  }
+  return url;
+}
+
+// ── Data fetchers ─────────────────────────────────────────────────────
+
+let _chainsCache: ChainInfo[] | null = null;
+export async function fetchChains(): Promise<ChainInfo[]> {
+  if (_chainsCache) return _chainsCache;
+  const resp = await fetch(`${ACROSS_API}/swap/chains`);
+  if (!resp.ok) throw new Error(`Chains API ${resp.status}`);
+  const raw: Array<{ chainId: number; name: string; logoUrl: string }> = await resp.json();
+
+  // Exclude non-EVM (Solana has a huge chainId) and internal chains
+  const EXCLUDED = [34268394551451, 1337, 2337]; // Solana, HyperCore, Lighter
+  _chainsCache = raw
+    .filter(c => !EXCLUDED.includes(c.chainId))
+    .map(c => ({
+      chainId: c.chainId,
+      name: c.name,
+      shortName: chainShortName(c.chainId, c.name),
+      logoUrl: c.logoUrl,
+    }));
+  return _chainsCache;
+}
+
+const _tokensCache: Record<number, TokenInfo[]> = {};
+export async function fetchTokensForChain(chainId: number): Promise<TokenInfo[]> {
+  if (_tokensCache[chainId]) return _tokensCache[chainId];
+  const resp = await fetch(`${ACROSS_API}/swap/tokens?chainId=${chainId}`);
+  if (!resp.ok) throw new Error(`Tokens API ${resp.status}`);
+  const raw: Array<{
+    symbol: string; name: string; address: string;
+    decimals: number; chainId: number; logoUrl: string;
+  }> = await resp.json();
+
+  _tokensCache[chainId] = raw.map(t => ({
+    symbol: t.symbol,
+    name: t.name,
+    address: t.address,
+    decimals: t.decimals,
+    chainId: t.chainId,
+    logoUrl: toRawLogoUrl(t.logoUrl),
+  }));
+  return _tokensCache[chainId];
+}
+
+// ── Swap API ──────────────────────────────────────────────────────────
+
+export async function fetchSwapQuote(params: {
+  originChainId: number;
+  destinationChainId: number;
+  inputToken: string;       // address on origin chain
+  outputToken: string;      // address on destination chain
+  amount: string;           // raw units of input token
+  depositor: string;        // user wallet address (or zero address for quote-only)
+  recipient?: string;       // defaults to depositor
+  slippageTolerance?: number; // default 0.5 (%)
+  integratorId?: string;
+}): Promise<SwapQuote> {
+  const url = new URL(`${ACROSS_API}/swap/approval`);
+  url.searchParams.set("originChainId", String(params.originChainId));
+  url.searchParams.set("destinationChainId", String(params.destinationChainId));
+  url.searchParams.set("inputToken", params.inputToken);
+  url.searchParams.set("outputToken", params.outputToken);
+  url.searchParams.set("amount", params.amount);
+  url.searchParams.set("depositor", params.depositor);
+  if (params.recipient) url.searchParams.set("recipient", params.recipient);
+  if (params.slippageTolerance !== undefined) {
+    url.searchParams.set("slippageTolerance", String(params.slippageTolerance));
+  }
+  if (params.integratorId) url.searchParams.set("integratorId", params.integratorId);
+
+  const resp = await fetch(url.toString());
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error((err as { message?: string }).message || `Swap API ${resp.status}`);
+  }
+  return resp.json();
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────
 
 export function toUnits(amount: number, decimals: number): string {
-  return Math.floor(amount * Math.pow(10, decimals)).toString();
+  return BigInt(Math.floor(amount * Math.pow(10, decimals))).toString();
 }
 
 export function fromUnits(raw: string, decimals: number): number {
@@ -79,21 +159,18 @@ export function fmtAmount(n: number, decimals: number): string {
   return n.toLocaleString("en-US", { maximumFractionDigits: 6 });
 }
 
-export async function fetchAcrossSuggestedFees(params: {
-  inputToken: string;
-  outputToken: string;
-  originChainId: number;
-  destinationChainId: number;
-  amount: string;
-}): Promise<AcrossQuote> {
-  const url = new URL(`${ACROSS_API}/suggested-fees`);
-  url.searchParams.set("inputToken", params.inputToken);
-  url.searchParams.set("outputToken", params.outputToken);
-  url.searchParams.set("originChainId", String(params.originChainId));
-  url.searchParams.set("destinationChainId", String(params.destinationChainId));
-  url.searchParams.set("amount", params.amount);
+// Integrator ID for Across BD tracking
+export const INTEGRATOR_ID = "0x00ce";
 
-  const resp = await fetch(url.toString());
-  if (!resp.ok) throw new Error(`Across API error ${resp.status}`);
-  return resp.json();
+// ── Chain short names ─────────────────────────────────────────────────
+function chainShortName(chainId: number, name: string): string {
+  const MAP: Record<number, string> = {
+    1: "ETH", 10: "OP", 137: "POL", 324: "ZKS", 8453: "BASE",
+    42161: "ARB", 59144: "LINEA", 34443: "MODE", 81457: "BLAST",
+    1135: "LISK", 534352: "SCROLL", 7777777: "ZORA", 480: "WC",
+    57073: "INK", 1868: "SONEIUM", 130: "UNI", 56: "BNB",
+    999: "HYPE", 9745: "PLASMA", 143: "MONAD", 4217: "TEMPO",
+    232: "LENS", 4326: "MEGA",
+  };
+  return MAP[chainId] || name.slice(0, 4).toUpperCase();
 }
