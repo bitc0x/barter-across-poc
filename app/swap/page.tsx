@@ -1,47 +1,13 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { BarterLogoMark, AcrossLogoMark } from "@/components/Logos";
 import {
   fetchChains, fetchTokensForChain, fetchSwapQuote,
   fromUnits, toUnits, fmtAmount, INTEGRATOR_ID,
   type ChainInfo, type TokenInfo, type SwapQuote,
 } from "@/lib/across";
-
-// ── Wallet hook (AppKit via window bridge) ────────────────────────────
-function useWallet() {
-  const [address, setAddress] = useState<string | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
-
-  useEffect(() => {
-    const handle = (e: Event) => {
-      const d = (e as CustomEvent<{ address?: string; isConnected: boolean }>).detail;
-      setAddress(d.address ?? null);
-      setIsConnected(d.isConnected);
-    };
-    window.addEventListener("appkit-account-changed", handle);
-    const iv = setInterval(() => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const m = (window as any).__appkit_modal;
-        if (m?.getAddress) {
-          const a = m.getAddress();
-          setAddress(a || null);
-          setIsConnected(!!a);
-        }
-      } catch { /* not ready */ }
-    }, 1000);
-    return () => { window.removeEventListener("appkit-account-changed", handle); clearInterval(iv); };
-  }, []);
-
-  const openModal = useCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const m = (window as any).__appkit_modal;
-    if (m?.open) m.open();
-    else window.dispatchEvent(new CustomEvent("open-appkit-modal"));
-  }, []);
-
-  return { address, isConnected, openModal };
-}
 
 // ── Types ─────────────────────────────────────────────────────────────
 type SwapTab = "swap" | "crosschain";
@@ -85,7 +51,7 @@ function tokenText(symbol: string, isDark: boolean) {
 export default function SwapPage() {
   const [theme, setTheme] = useState<Theme>("dark");
   const [tab, setTab] = useState<SwapTab>("swap");
-  const { address, isConnected, openModal } = useWallet();
+  const { address, isConnected } = useAccount();
 
   // Live chain/token data
   const [chains, setChains] = useState<ChainInfo[]>([]);
@@ -264,12 +230,11 @@ export default function SwapPage() {
               {item}
             </button>
           ))}
-          <button
-            onClick={openModal}
-            style={{ background: ctaBg, color: ctaText, border: "none", borderRadius: 20, padding: "8px 20px", fontWeight: 600, fontSize: 14, cursor: "pointer" }}
-          >
-            {isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Connect wallet"}
-          </button>
+          <ConnectButton
+            accountStatus="address"
+            chainStatus="none"
+            showBalance={false}
+          />
         </div>
       </nav>
 
@@ -329,7 +294,7 @@ export default function SwapPage() {
               {/* Action card */}
               <ActionCard
                 isDark={isDark} ctaBg={ctaBg} ctaText={ctaText} cardR={cardR} cardH={cardH}
-                isConnected={isConnected} onConnect={openModal}
+                isConnected={isConnected} onConnect={() => {}}
                 label={!isConnected ? "Connect wallet" : scAmount && parseFloat(scAmount) > 0 ? "Swap" : "Enter amount"}
               />
             </div>
@@ -383,7 +348,7 @@ export default function SwapPage() {
               {/* Action card */}
               <ActionCard
                 isDark={isDark} ctaBg={ccCtaBg} ctaText={ccCtaText} cardR={cardR} cardH={cardH + 20}
-                isConnected={isConnected} onConnect={openModal}
+                isConnected={isConnected} onConnect={() => {}}
                 label={!isConnected ? "Connect wallet"
                   : !ccAmount ? "Enter amount"
                   : ccState === "loading" ? "Routing..."
