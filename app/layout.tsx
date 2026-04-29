@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const ibm = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "Barter × Across — Cross-Chain Swap Demo",
+  title: "Barter x Across: Cross-Chain Swap Demo",
   description: "A partnership proposal: Across Protocol powering cross-chain swaps inside Barter's execution layer.",
 };
 

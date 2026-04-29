@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { BarterLogoMark, AcrossLogoMark } from "@/components/Logos";
 import {
   CHAINS, TOKENS, toUnits, fromUnits, fmtAmount,
   fetchAcrossSuggestedFees, type TokenInfo, type ChainInfo
@@ -110,9 +111,7 @@ export default function SwapPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 glass border-b border-barter-border">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-lg bg-barter-orange flex items-center justify-center">
-              <span className="text-white font-bold text-xs font-mono">B</span>
-            </div>
+            <BarterLogoMark size={26} />
             <span className="font-semibold text-sm text-barter-text">Barter</span>
           </Link>
           <div className="hidden md:flex items-center gap-1 bg-barter-surface border border-barter-border rounded-lg p-1">
@@ -217,9 +216,7 @@ export default function SwapPage() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-across-green hover:text-across-green-dim transition-colors font-medium"
               >
-                <div className="w-4 h-4 rounded bg-across-green flex items-center justify-center">
-                  <span className="text-barter-bg font-bold" style={{ fontSize: 8 }}>A</span>
-                </div>
+                <AcrossLogoMark size={16} />
                 Across Protocol
               </a>
             </div>
@@ -232,12 +229,12 @@ export default function SwapPage() {
             <InfoCard
               icon="⚡"
               title="Intent-based settlement"
-              body="Relayers fund your destination instantly. No waiting for origin chain finality."
+              body="Relayers fund your destination instantly. No waiting for origin chain finality. Typical fills under 60 seconds."
             />
             <InfoCard
               icon="🔒"
-              title="No wrapped assets"
-              body="You receive native tokens. No lock-and-mint, no bridge-specific IOUs."
+              title="Native assets only"
+              body="You receive canonical tokens, not wrapped representations. No bridge-specific IOU risk."
             />
           </div>
         )}
@@ -640,7 +637,7 @@ function CrossChainSwap({
           <QuoteRow label="Bridge fee" value={`${ccQuote.relayFeePct}% (${fmtAmount(ccQuote.relayFeeTotal, ccSellToken.decimals)} ${ccSellToken.symbol})`} />
           <QuoteRow label="Est. fill time" value={`~${ccQuote.estimatedFillTimeSec}s`} highlight />
           <QuoteRow label="Settle via" value="Across intent protocol" />
-          <QuoteRow label="Asset risk" value="None — native tokens only" highlight />
+          <QuoteRow label="Asset risk" value="None: native tokens only" highlight />
         </div>
       )}
 
