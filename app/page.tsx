@@ -64,6 +64,11 @@ const ACROSS_PROPS = [
     body: "18 comprehensive audits by OpenZeppelin. Only intent bridge with a perfect security record at $35B+ volume. OpenZeppelin published a dedicated case study.",
   },
   {
+    icon: "🏛️",
+    title: "Fully decentralized. Non-custodial.",
+    body: "No locked funds, no admin keys, no multisig honeypot. Relayers front their own capital for each transfer. Users never give up custody of assets at any point.",
+  },
+  {
     icon: "💰",
     title: "Bridge 1 ETH for under $1",
     body: "Relayer competition drives fees to their floor. Stablecoin transfers on major L2 routes clear for cents. No protocol fee on selected routes.",
@@ -178,7 +183,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Across credentials - the selling section */}
+      {/* Decentralization callout */}
+      <section className="px-6 pb-16 max-w-6xl mx-auto">
+        <div className="bg-barter-card border border-barter-border rounded-2xl p-8 grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <div className="text-xs font-mono text-across-green tracking-widest uppercase mb-3">Security architecture</div>
+            <h2 className="text-2xl font-bold text-barter-text mb-4 leading-snug">
+              No locked funds.<br />No admin keys.<br />No honeypot.
+            </h2>
+            <p className="text-barter-sub text-sm leading-relaxed mb-4">
+              Most bridges lock user funds in smart contracts, creating a single target worth hundreds of millions. Across has no locked funds. Relayers front their own capital for each transfer, eliminating the honeypot entirely.
+            </p>
+            <p className="text-barter-sub text-sm leading-relaxed">
+              No multisig that can be compromised. No validators that can collude. No wrapped assets that can be minted to zero. Users stay in full custody of their assets throughout. Security through architecture, not through trust.
+            </p>
+          </div>
+          <div className="space-y-3">
+            {[
+              { label: "Custody model", across: "Non-custodial always", others: "Funds locked in contract", win: true },
+              { label: "Admin control", across: "None. Fully permissionless", others: "Multisig or admin keys", win: true },
+              { label: "Asset type", across: "Canonical tokens only", others: "Wrapped representations", win: true },
+              { label: "Failure mode", across: "1-of-N honest relayer", others: "M-of-N validators", win: true },
+              { label: "Exploit history", across: "Zero, across $35B+", others: "$2.9B lost industry-wide", win: true },
+            ].map((row) => (
+              <div key={row.label} className="grid grid-cols-3 gap-2 text-xs">
+                <span className="text-barter-muted font-mono">{row.label}</span>
+                <span className="text-across-green font-medium">{row.across}</span>
+                <span className="text-barter-muted line-through">{row.others}</span>
+              </div>
+            ))}
+            <p className="text-[10px] text-barter-muted font-mono pt-1">Sources: across.to/blog, defillama.com/hacks</p>
+          </div>
+        </div>
+      </section>
+
+
       <section id="across" className="px-6 pb-24 max-w-6xl mx-auto">
         <div className="mb-12">
           <div className="text-xs font-mono text-across-green tracking-widest uppercase mb-3">Why Across</div>
