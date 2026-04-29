@@ -1,65 +1,68 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { type ReactNode, useEffect } from "react";
+import React, { type ReactNode, useEffect, useRef } from "react";
+import { createAppKit } from "@reown/appkit/react";
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+import { mainnet, arbitrum, base, optimism, polygon } from "@reown/appkit/networks";
+import { WagmiProvider } from "wagmi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const PROJECT_ID = "e6ec1105c1bea07ee25e2ff2cab86514";
 
-export default function Web3Provider({ children, cookies: _ }: { children: ReactNode; cookies: string | null }) {
+const networks = [mainnet, arbitrum, base, optimism, polygon] as const;
+
+const wagmiAdapter = new WagmiAdapter({
+  projectId: PROJECT_ID,
+  networks,
+  ssr: true,
+});
+
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
+  projectId: PROJECT_ID,
+  networks,
+  defaultNetwork: mainnet,
+  metadata: {
+    name: "Barter x Across",
+    description: "Cross-chain swaps powered by Across Protocol",
+    url: "https://barter-across-poc.vercel.app",
+    icons: ["https://barterswap.xyz/img/logo.svg"],
+  },
+  features: { analytics: false, email: false, socials: false },
+  themeMode: "dark",
+  themeVariables: {
+    "--w3m-accent": "#FF8C20",
+    "--w3m-border-radius-master": "4px",
+  },
+});
+
+const queryClient = new QueryClient();
+
+export { modal };
+
+export default function Web3Provider({ children }: { children: ReactNode }) {
+  const bridged = useRef(false);
+
   useEffect(() => {
-    async function init() {
-      try {
-        // Dynamic imports - modules installed by Vercel at build time
-        const [appkitReact, appkitWagmi, wagmiPkg, appkitNetworks] = await Promise.all([
-          import(/* webpackIgnore: true */ "@reown/appkit/react" as any),
-          import(/* webpackIgnore: true */ "@reown/appkit-adapter-wagmi" as any),
-          import(/* webpackIgnore: true */ "wagmi" as any),
-          import(/* webpackIgnore: true */ "@reown/appkit/networks" as any),
-        ]);
+    if (bridged.current) return;
+    bridged.current = true;
 
-        const { createAppKit } = appkitReact;
-        const { WagmiAdapter } = appkitWagmi;
-        const { cookieStorage, createStorage } = wagmiPkg;
-        const networks = appkitNetworks;
+    // Expose modal on window so swap page can call open()
+    (window as unknown as Record<string, unknown>).__appkit_modal = modal;
 
-        const netList = [networks.mainnet, networks.arbitrum, networks.base, networks.optimism, networks.polygon];
+    // Listen for open requests from swap page
+    window.addEventListener("open-appkit-modal", () => modal.open());
 
-        const wagmiAdapter = new WagmiAdapter({
-          storage: createStorage({ storage: cookieStorage }),
-          ssr: false,
-          projectId: PROJECT_ID,
-          networks: netList,
-        });
-
-        const modal = createAppKit({
-          adapters: [wagmiAdapter],
-          projectId: PROJECT_ID,
-          networks: netList,
-          defaultNetwork: networks.mainnet,
-          metadata: {
-            name: "Barter x Across",
-            description: "Cross-chain swaps powered by Across Protocol",
-            url: "https://barter-across-poc.vercel.app",
-            icons: ["https://barterswap.xyz/img/logo.svg"],
-          },
-          features: { analytics: false, email: false, socials: false },
-          themeMode: "dark",
-          themeVariables: {
-            "--w3m-accent": "#FF8C20",
-            "--w3m-border-radius-master": "4px",
-          },
-        });
-
-        (window as any).__appkit_modal = modal;
-        window.addEventListener("open-appkit-modal", () => modal.open());
-        modal.subscribeAccount((acc: { address?: string; isConnected: boolean }) => {
-          window.dispatchEvent(new CustomEvent("appkit-account-changed", { detail: acc }));
-        });
-      } catch (e) {
-        console.warn("AppKit init failed:", e);
-      }
-    }
-    init();
+    // Forward account changes to swap page
+    modal.subscribeAccount((acc: { address?: string; isConnected: boolean }) => {
+      window.dispatchEvent(new CustomEvent("appkit-account-changed", { detail: acc }));
+    });
   }, []);
 
-  return <>{children}</>;
+  return (
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
 }
