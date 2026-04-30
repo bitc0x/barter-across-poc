@@ -54,6 +54,7 @@ export default function SwapPage() {
   const { openConnectModal } = useConnectModal();
   const { sendTransaction, isPending: isTxPending, isSuccess: isTxSuccess, error: txError } = useSendTransaction();
   const [txHash, setTxHash] = useState<string | null>(null);
+  const clearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Live chain/token data
   const [chains, setChains] = useState<ChainInfo[]>([]);
@@ -168,7 +169,17 @@ export default function SwapPage() {
       value: BigInt(tx.value || "0"),
       chainId: tx.chainId,
     }, {
-      onSuccess: (hash) => setTxHash(hash),
+      onSuccess: (hash) => {
+        setTxHash(hash);
+        // Auto-clear after 6 seconds - clean UX, user can click the link before it goes
+        if (clearRef.current) clearTimeout(clearRef.current);
+        clearRef.current = setTimeout(() => {
+          setTxHash(null);
+          setCcAmount("");
+          setCcQuote(null);
+          setCcState("idle");
+        }, 6000);
+      },
     });
   }
 
@@ -202,7 +213,7 @@ export default function SwapPage() {
   const tabBorder = isDark ? "#333333" : "#D8D0C8";
   const tabActive = isDark ? "#2a2a2a" : "#FFFFFF";
   const cardR     = 20;
-  const cardH     = 220;
+  const cardH     = 260;
 
   const scSellBg   = scSell ? tokenBg(scSell.symbol, isDark) : (isDark ? "#4A6080" : "#BFCFE8");
   const scBuyBg    = scBuy  ? tokenBg(scBuy.symbol,  isDark) : (isDark ? "#907830" : "#E8D8A0");
@@ -254,17 +265,8 @@ export default function SwapPage() {
         {/* Tab switcher */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 32 }}>
           <div style={{ display: "flex", gap: 4, padding: 4, background: tabBg, border: `1px solid ${tabBorder}`, borderRadius: 12 }}>
-            <TabPill label="Swap" active={tab === "swap"} onClick={() => setTab("swap")} isDark={isDark} tabActive={tabActive} textPri={textPri} textMut={textMut} />
-            <TabPill
-              label="Cross-chain"
-              active={tab === "crosschain"}
-              onClick={() => setTab("crosschain")}
-              isDark={isDark} tabActive={tabActive} textPri={textPri} textMut={textMut}
-              badge={<AcrossLogoMark size={14} />}
-              badgeLabel="Across"
-              badgeLabelColor={isDark ? "#5BF3A0" : "#0a5c35"}
-              badgeLabelBg={isDark ? "rgba(91,243,160,0.12)" : "rgba(0,100,60,0.1)"}
-            />
+            <TabPill label="Swap" active={tab === "swap"} onClick={() => setTab("swap")} isDark={isDark} tabActive={tabActive} textPri={textPri} textMut={textMut} prominent />
+            <TabPill label="Cross-chain" active={tab === "crosschain"} onClick={() => setTab("crosschain")} isDark={isDark} tabActive={tabActive} textPri={textPri} textMut={textMut} />
           </div>
         </div>
 
@@ -314,7 +316,7 @@ export default function SwapPage() {
             /* ── Cross-chain ────────────────────────────── */
             <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
               {/* Origin */}
-              <div style={{ flex: "1 1 0", background: ccSellBg, borderRadius: cardR, padding: 24, minHeight: cardH + 20, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ flex: "1 1 0", background: ccSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <TokenSelector token={sellToken} onClick={() => setShowPicker("ccSell")} textColor={ccSellText} />
                   <ChainSelector chain={originChain} onClick={() => setShowPicker("ccOriginChain")} isDark={isDark} />
@@ -331,7 +333,7 @@ export default function SwapPage() {
               {/* Flip */}
               <FlipBtn onClick={flipChains} isDark={isDark} />
               {/* Destination */}
-              <div style={{ flex: "1 1 0", background: ccBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH + 20, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ flex: "1 1 0", background: ccBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <TokenSelector token={buyToken} onClick={() => setShowPicker("ccBuy")} textColor={ccBuyText} />
                   <ChainSelector chain={destChain} onClick={() => setShowPicker("ccDestChain")} isDark={isDark} />
@@ -364,12 +366,12 @@ export default function SwapPage() {
                   : isTxPending ? "#3a8a60"
                   : ccCtaBg
                 }
-                ctaText={ccCtaText} cardR={cardR} cardH={cardH + 20}
+                ctaText={ccCtaText} cardR={cardR} cardH={cardH}
                 isConnected={isConnected}
                 onConnect={() => openConnectModal?.()}
                 onExecute={ccState === "success" && !isTxPending && !isTxSuccess ? executeSwap : undefined}
                 label={
-                  isTxSuccess ? "Submitted!"
+                  isTxSuccess ? "Success!"
                   : isTxPending ? "Confirm in wallet..."
                   : txError ? "Rejected"
                   : !isConnected ? "Connect wallet"
@@ -410,9 +412,12 @@ export default function SwapPage() {
           )}
           {tab === "crosschain" && (
             <div style={{ textAlign: "center", marginTop: 16 }}>
-              <span style={{ fontSize: 11, color: textMut }}>Cross-chain powered by{" "}
-                <a href="https://across.to" target="_blank" rel="noopener noreferrer" style={{ color: isDark ? "#5BF3A0" : "#0a5c35", textDecoration: "none", fontWeight: 500 }}>Across Protocol</a>
-                {" "}· Swap API · Integrator ID: {INTEGRATOR_ID}
+              <span style={{ fontSize: 11, color: textMut, display: "inline-flex", alignItems: "center", gap: 5 }}>
+                Cross-chain powered by{" "}
+                <a href="https://across.to" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 4, color: isDark ? "#5BF3A0" : "#0a5c35", textDecoration: "none", fontWeight: 500 }}>
+                  <AcrossLogoMark size={12} />
+                  Across
+                </a>
               </span>
             </div>
           )}
@@ -450,13 +455,22 @@ function ThemeBtn({ active, onClick, isDark, icon }: { active: boolean; onClick:
   );
 }
 
-function TabPill({ label, active, onClick, isDark, tabActive, textPri, textMut, badge, badgeLabel, badgeLabelColor, badgeLabelBg }: {
+function TabPill({ label, active, onClick, isDark, tabActive, textPri, textMut, badge, badgeLabel, badgeLabelColor, badgeLabelBg, prominent }: {
   label: string; active: boolean; onClick: () => void;
   isDark: boolean; tabActive: string; textPri: string; textMut: string;
   badge?: React.ReactNode; badgeLabel?: string; badgeLabelColor?: string; badgeLabelBg?: string;
+  prominent?: boolean;
 }) {
   return (
-    <button onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 16px", borderRadius: 8, border: "none", cursor: "pointer", background: active ? tabActive : "transparent", color: active ? textPri : textMut, fontWeight: active ? 600 : 400, fontSize: 14, boxShadow: active ? (isDark ? "0 1px 4px rgba(0,0,0,0.4)" : "0 1px 4px rgba(0,0,0,0.1)") : "none" }}>
+    <button onClick={onClick} style={{
+      display: "flex", alignItems: "center", gap: 6,
+      padding: "7px 16px", borderRadius: 8, border: "none", cursor: "pointer",
+      background: active ? tabActive : "transparent",
+      color: active ? textPri : prominent ? (isDark ? "#cccccc" : "#555555") : textMut,
+      fontWeight: active ? 700 : prominent ? 500 : 400,
+      fontSize: prominent ? 14 : 13,
+      boxShadow: active ? (isDark ? "0 1px 4px rgba(0,0,0,0.4)" : "0 1px 4px rgba(0,0,0,0.1)") : "none",
+    }}>
       {label}
       {badge && <span style={{ display: "flex", alignItems: "center", gap: 4 }}>{badge}<span style={{ fontSize: 10, fontWeight: 600, color: badgeLabelColor, background: badgeLabelBg, padding: "1px 6px", borderRadius: 4 }}>{badgeLabel}</span></span>}
     </button>
