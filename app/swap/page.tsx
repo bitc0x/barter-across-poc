@@ -23,20 +23,21 @@ interface CCQuote {
 }
 
 // ── Token colors - exact match to barterswap.xyz screenshots ─────────
+// Token card colors - pixel-matched to app.barterswap.xyz screenshots
 const TOKEN_BG_LIGHT: Record<string, string> = {
-  USDC: "#C8D4EC", WETH: "#D4D4E8", ETH: "#D4D4E8", USDT: "#C6E8D4",
-  DAI:  "#F0D8A8", WBTC: "#F0D0A0", LINK: "#C8D4EC", UNI:  "#ECC8D8",
-  ACX:  "#C8D4EC", ARB:  "#C8D8EC",
+  USDC: "#C6D2EA", WETH: "#D0CEDC", ETH:  "#D0CEDC", USDT: "#C4E8D2",
+  DAI:  "#EED8A0", WBTC: "#EED0A0", LINK: "#C6D2EA", UNI:  "#EAC8D8",
+  ACX:  "#C6D2EA", ARB:  "#C6D4EA",
 };
 const TOKEN_BG_DARK: Record<string, string> = {
-  USDC: "#384870", WETH: "#484C68", ETH: "#484C68", USDT: "#2A6648",
-  DAI:  "#7A5A20", WBTC: "#7A4018", LINK: "#384870", UNI:  "#682848",
-  ACX:  "#384870", ARB:  "#304870",
+  USDC: "#364470", WETH: "#46485E", ETH:  "#46485E", USDT: "#256040",
+  DAI:  "#785820", WBTC: "#783C18", LINK: "#364470", UNI:  "#642848",
+  ACX:  "#364470", ARB:  "#2E4470",
 };
 const TOKEN_TEXT_LIGHT: Record<string, string> = {
-  USDC: "#1A2A4A", WETH: "#1A1A3A", ETH: "#1A1A3A", USDT: "#0A3020",
-  DAI:  "#4A3000", WBTC: "#4A2000", LINK: "#1A2A4A", UNI:  "#3A0820",
-  ACX:  "#1A2A4A", ARB:  "#1A2840",
+  USDC: "#18284A", WETH: "#1A1A38", ETH:  "#1A1A38", USDT: "#082E1E",
+  DAI:  "#483000", WBTC: "#481E00", LINK: "#18284A", UNI:  "#38081E",
+  ACX:  "#18284A", ARB:  "#182840",
 };
 
 function tokenBg(symbol: string, isDark: boolean) {
@@ -254,7 +255,7 @@ export default function SwapPage() {
   const isDark = theme === "dark";
 
   // Theme tokens
-  const bg        = isDark ? "#18181C" : "#EEE8DF";
+  const bg        = isDark ? "#18181C" : "#EDE7DE";
   const navBg     = isDark ? "#1E1E24" : "#FFFFFF";
   const navBorder = isDark ? "#2A2A34" : "#E4DDD4";
   const textPri   = isDark ? "#FFFFFF" : "#111111";
@@ -264,6 +265,7 @@ export default function SwapPage() {
   const tabBg     = isDark ? "#24242C" : "#E8E2D8";
   const tabBorder = isDark ? "#34343E" : "#CCC6BC";
   const tabActive = isDark ? "#2E2E38" : "#FFFFFF";
+  const tabActiveBorder = isDark ? "#4A4A5A" : "#FF8C20";
   const cardR     = 20;
   const cardH     = 260;
 
@@ -317,8 +319,8 @@ export default function SwapPage() {
         {/* Tab switcher */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 32 }}>
           <div style={{ display: "flex", gap: 4, padding: 4, background: tabBg, border: `1px solid ${tabBorder}`, borderRadius: 12 }}>
-            <TabPill label="Swap" active={tab === "swap"} onClick={() => setTab("swap")} isDark={isDark} tabActive={tabActive} textPri={textPri} textMut={textMut} prominent />
-            <TabPill label="Cross-chain" active={tab === "crosschain"} onClick={() => setTab("crosschain")} isDark={isDark} tabActive={tabActive} textPri={textPri} textMut={textMut} />
+            <TabPill label="Swap" active={tab === "swap"} onClick={() => setTab("swap")} isDark={isDark} tabActive={tabActive} tabActiveBorder={tabActiveBorder} textPri={textPri} textMut={textMut} prominent />
+            <TabPill label="Cross-chain" active={tab === "crosschain"} onClick={() => setTab("crosschain")} isDark={isDark} tabActive={tabActive} tabActiveBorder={tabActiveBorder} textPri={textPri} textMut={textMut} />
           </div>
         </div>
 
@@ -329,13 +331,13 @@ export default function SwapPage() {
             /* ── Same-chain ─────────────────────────────── */
             <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
               {/* Sell */}
-              <div style={{ flex: "1 1 0", background: scSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
+              <div style={{ flex: "1 1 0", background: scSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: isDark ? "2px solid rgba(255,255,255,0.12)" : "2px solid rgba(255,255,255,0.85)", boxShadow: isDark ? "none" : "0 4px 24px rgba(0,0,0,0.07)" }}>
                 <div><TokenSelector token={scSell} onClick={() => setShowPicker("scSell")} textColor={scSellText} /></div>
                 <div>
                   <input
                     type="number" value={scAmount} onChange={e => setScAmount(e.target.value)}
                     placeholder="0.0"
-                    style={{ background: "none", border: "none", outline: "none", fontSize: 76, fontWeight: 800, color: scSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-2px" }}
+                    style={{ background: "none", border: "none", outline: "none", fontSize: 76, fontWeight: 800, color: scSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-1.5px", fontVariantNumeric: "tabular-nums" }}
                   />
                   <div style={{ fontSize: 13, color: scSellText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(scSell)}</div>
                 </div>
@@ -343,10 +345,10 @@ export default function SwapPage() {
               {/* Flip */}
               <FlipBtn onClick={flipSameChain} isDark={isDark} />
               {/* Buy */}
-              <div style={{ flex: "1 1 0", background: scBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
+              <div style={{ flex: "1 1 0", background: scBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: isDark ? "2px solid rgba(255,255,255,0.12)" : "2px solid rgba(255,255,255,0.85)", boxShadow: isDark ? "none" : "0 4px 24px rgba(0,0,0,0.07)" }}>
                 <div><TokenSelector token={scBuy} onClick={() => setShowPicker("scBuy")} textColor={scBuyText} /></div>
                 <div>
-                  <div style={{ fontSize: 76, fontWeight: 800, color: scBuyText, lineHeight: 1.05, minHeight: 80, letterSpacing: "-2px" }}>
+                  <div style={{ fontSize: 76, fontWeight: 800, color: scBuyText, lineHeight: 1.05, minHeight: 80, letterSpacing: "-1.5px", fontVariantNumeric: "tabular-nums", opacity: scAmount && parseFloat(scAmount) > 0 ? 1 : 0.22 }}>
                     {scAmount && parseFloat(scAmount) > 0 ? <span style={{ opacity: 0.5 }}>...</span> : "0.0"}
                   </div>
                   <div style={{ fontSize: 13, color: scBuyText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(scBuy)}</div>
@@ -368,7 +370,7 @@ export default function SwapPage() {
             /* ── Cross-chain ────────────────────────────── */
             <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
               {/* Origin */}
-              <div style={{ flex: "1 1 0", background: ccSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
+              <div style={{ flex: "1 1 0", background: ccSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: isDark ? "2px solid rgba(255,255,255,0.12)" : "2px solid rgba(255,255,255,0.85)", boxShadow: isDark ? "none" : "0 4px 24px rgba(0,0,0,0.07)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <TokenSelector token={sellToken} onClick={() => setShowPicker("ccSell")} textColor={ccSellText} />
                   <ChainSelector chain={originChain} onClick={() => setShowPicker("ccOriginChain")} isDark={isDark} />
@@ -377,7 +379,7 @@ export default function SwapPage() {
                   <input
                     type="number" value={ccAmount} onChange={e => setCcAmount(e.target.value)}
                     placeholder="0.0"
-                    style={{ background: "none", border: "none", outline: "none", fontSize: 68, fontWeight: 800, color: ccSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-2px" }}
+                    style={{ background: "none", border: "none", outline: "none", fontSize: 68, fontWeight: 800, color: ccSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-1.5px", fontVariantNumeric: "tabular-nums" }}
                   />
                   <div style={{ fontSize: 13, color: ccSellText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(sellToken)}</div>
                 </div>
@@ -385,13 +387,13 @@ export default function SwapPage() {
               {/* Flip */}
               <FlipBtn onClick={flipChains} isDark={isDark} />
               {/* Destination */}
-              <div style={{ flex: "1 1 0", background: ccBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
+              <div style={{ flex: "1 1 0", background: ccBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: isDark ? "2px solid rgba(255,255,255,0.12)" : "2px solid rgba(255,255,255,0.85)", boxShadow: isDark ? "none" : "0 4px 24px rgba(0,0,0,0.07)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <TokenSelector token={buyToken} onClick={() => setShowPicker("ccBuy")} textColor={ccBuyText} />
                   <ChainSelector chain={destChain} onClick={() => setShowPicker("ccDestChain")} isDark={isDark} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 68, fontWeight: 800, color: ccBuyText, lineHeight: 1.05, minHeight: 72, letterSpacing: "-2px" }}>
+                  <div style={{ fontSize: 68, fontWeight: 800, color: ccBuyText, lineHeight: 1.05, minHeight: 72, letterSpacing: "-1.5px", fontVariantNumeric: "tabular-nums", opacity: ccState === "success" ? 1 : 0.22 }}>
                     {ccState === "loading" ? <span style={{ opacity: 0.4, fontSize: 36 }}>...</span>
                       : ccState === "success" && ccQuote ? fmtAmount(ccQuote.outputAmount, buyToken?.decimals ?? 18)
                       : "0.0"}
@@ -499,21 +501,24 @@ function ThemeBtn({ active, onClick, isDark, icon }: { active: boolean; onClick:
   );
 }
 
-function TabPill({ label, active, onClick, isDark, tabActive, textPri, textMut, badge, badgeLabel, badgeLabelColor, badgeLabelBg, prominent }: {
+function TabPill({ label, active, onClick, isDark, tabActive, tabActiveBorder, textPri, textMut, badge, badgeLabel, badgeLabelColor, badgeLabelBg, prominent }: {
   label: string; active: boolean; onClick: () => void;
-  isDark: boolean; tabActive: string; textPri: string; textMut: string;
+  isDark: boolean; tabActive: string; tabActiveBorder?: string; textPri: string; textMut: string;
   badge?: React.ReactNode; badgeLabel?: string; badgeLabelColor?: string; badgeLabelBg?: string;
   prominent?: boolean;
 }) {
   return (
     <button onClick={onClick} style={{
       display: "flex", alignItems: "center", gap: 6,
-      padding: "7px 16px", borderRadius: 8, border: "none", cursor: "pointer",
+      padding: "7px 18px", borderRadius: 9,
+      border: active ? `1.5px solid ${tabActiveBorder || "#FF8C20"}` : "1.5px solid transparent",
+      cursor: "pointer",
       background: active ? tabActive : "transparent",
-      color: active ? textPri : prominent ? (isDark ? "#cccccc" : "#555555") : textMut,
+      color: active ? textPri : prominent ? (isDark ? "#cccccc" : "#666666") : textMut,
       fontWeight: active ? 700 : prominent ? 500 : 400,
       fontSize: prominent ? 14 : 13,
-      boxShadow: active ? (isDark ? "0 1px 4px rgba(0,0,0,0.4)" : "0 1px 4px rgba(0,0,0,0.1)") : "none",
+      boxShadow: active ? (isDark ? "0 1px 4px rgba(0,0,0,0.4)" : "0 1px 6px rgba(0,0,0,0.08)") : "none",
+      transition: "all 0.15s ease",
     }}>
       {label}
       {badge && <span style={{ display: "flex", alignItems: "center", gap: 4 }}>{badge}<span style={{ fontSize: 10, fontWeight: 600, color: badgeLabelColor, background: badgeLabelBg, padding: "1px 6px", borderRadius: 4 }}>{badgeLabel}</span></span>}
@@ -523,7 +528,7 @@ function TabPill({ label, active, onClick, isDark, tabActive, textPri, textMut, 
 
 function TokenSelector({ token, onClick, textColor }: { token: TokenInfo | null; onClick: () => void; textColor: string }) {
   return (
-    <button onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.45)", backdropFilter: "blur(8px)", border: "1.5px solid rgba(255,255,255,0.6)", borderRadius: 20, padding: "5px 10px 5px 6px", cursor: "pointer", color: textColor, fontFamily: "inherit" }}>
+    <button onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.5)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.5)", borderRadius: 20, padding: "5px 10px 5px 6px", cursor: "pointer", color: textColor, fontFamily: "inherit", boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>
       {token ? (
         <img src={token.logoUrl} alt={token.symbol} width={22} height={22} style={{ borderRadius: 11, flexShrink: 0 }} onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
       ) : (

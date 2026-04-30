@@ -155,8 +155,11 @@ export function fromUnits(raw: string, decimals: number): number {
 }
 
 export function fmtAmount(n: number, decimals: number): string {
-  if (decimals <= 6) return n.toLocaleString("en-US", { maximumFractionDigits: 4 });
-  return n.toLocaleString("en-US", { maximumFractionDigits: 6 });
+  const s = decimals <= 6
+    ? n.toLocaleString("en-US", { maximumFractionDigits: 4 })
+    : n.toLocaleString("en-US", { maximumFractionDigits: 6 });
+  // Barter uses space as thousands separator (e.g. "1 055.42")
+  return s.replace(/,/g, " ");
 }
 
 // Integrator ID for Across BD tracking
