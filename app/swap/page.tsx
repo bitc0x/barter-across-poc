@@ -337,7 +337,7 @@ export default function SwapPage() {
                   <input
                     type="number" value={scAmount} onChange={e => setScAmount(e.target.value)}
                     placeholder="0.0"
-                    style={{ background: "none", border: "none", outline: "none", fontSize: 76, fontWeight: 800, color: scSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-1.5px", fontVariantNumeric: "tabular-nums" }}
+                    style={{ background: "none", border: "none", outline: "none", fontSize: 88, fontWeight: 800, color: scSellText, width: "100%", padding: 0, lineHeight: 1.0, fontFamily: "inherit", letterSpacing: "-2px", fontVariantNumeric: "tabular-nums" }}
                   />
                   <div style={{ fontSize: 13, color: scSellText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(scSell)}</div>
                 </div>
@@ -348,7 +348,7 @@ export default function SwapPage() {
               <div style={{ flex: "1 1 0", background: scBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: isDark ? "2px solid rgba(255,255,255,0.12)" : "2px solid rgba(255,255,255,0.85)", boxShadow: isDark ? "none" : "0 4px 24px rgba(0,0,0,0.07)" }}>
                 <div><TokenSelector token={scBuy} onClick={() => setShowPicker("scBuy")} textColor={scBuyText} /></div>
                 <div>
-                  <div style={{ fontSize: 76, fontWeight: 800, color: scBuyText, lineHeight: 1.05, minHeight: 80, letterSpacing: "-1.5px", fontVariantNumeric: "tabular-nums", opacity: scAmount && parseFloat(scAmount) > 0 ? 1 : 0.22 }}>
+                  <div style={{ fontSize: 88, fontWeight: 800, color: scBuyText, lineHeight: 1.0, minHeight: 90, letterSpacing: "-2px", fontVariantNumeric: "tabular-nums", opacity: scAmount && parseFloat(scAmount) > 0 ? 1 : 0.22 }}>
                     {scAmount && parseFloat(scAmount) > 0 ? <span style={{ opacity: 0.5 }}>...</span> : "0.0"}
                   </div>
                   <div style={{ fontSize: 13, color: scBuyText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(scBuy)}</div>
@@ -379,7 +379,7 @@ export default function SwapPage() {
                   <input
                     type="number" value={ccAmount} onChange={e => setCcAmount(e.target.value)}
                     placeholder="0.0"
-                    style={{ background: "none", border: "none", outline: "none", fontSize: 68, fontWeight: 800, color: ccSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-1.5px", fontVariantNumeric: "tabular-nums" }}
+                    style={{ background: "none", border: "none", outline: "none", fontSize: 88, fontWeight: 800, color: ccSellText, width: "100%", padding: 0, lineHeight: 1.0, fontFamily: "inherit", letterSpacing: "-2px", fontVariantNumeric: "tabular-nums" }}
                   />
                   <div style={{ fontSize: 13, color: ccSellText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(sellToken)}</div>
                 </div>
@@ -393,7 +393,7 @@ export default function SwapPage() {
                   <ChainSelector chain={destChain} onClick={() => setShowPicker("ccDestChain")} isDark={isDark} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 68, fontWeight: 800, color: ccBuyText, lineHeight: 1.05, minHeight: 72, letterSpacing: "-1.5px", fontVariantNumeric: "tabular-nums", opacity: ccState === "success" ? 1 : 0.22 }}>
+                  <div style={{ fontSize: 88, fontWeight: 800, color: ccBuyText, lineHeight: 1.0, minHeight: 90, letterSpacing: "-2px", fontVariantNumeric: "tabular-nums", opacity: ccState === "success" ? 1 : 0.22 }}>
                     {ccState === "loading" ? <span style={{ opacity: 0.4, fontSize: 36 }}>...</span>
                       : ccState === "success" && ccQuote ? fmtAmount(ccQuote.outputAmount, buyToken?.decimals ?? 18)
                       : "0.0"}
