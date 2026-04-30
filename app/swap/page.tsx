@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useAccount, useSendTransaction } from "wagmi";
+import { useAccount, useSendTransaction, useBalance, useReadContracts, useChainId } from "wagmi";
 import { ConnectButton, useConnectModal } from "@rainbow-me/rainbowkit";
 import { BarterLogoMark, AcrossLogoMark } from "@/components/Logos";
 import {
@@ -52,6 +52,8 @@ export default function SwapPage() {
   const [tab, setTab] = useState<SwapTab>("swap");
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const chainId = useChainId();
+
   const { sendTransaction, isPending: isTxPending, isSuccess: isTxSuccess, error: txError } = useSendTransaction();
   const [txHash, setTxHash] = useState<string | null>(null);
   const clearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -77,6 +79,56 @@ export default function SwapPage() {
   const [ccState, setCcState] = useState<QuoteState>("idle");
   const [ccError, setCcError] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── Balance fetching ───────────────────────────────────────────────
+  // Native ETH balance on connected chain
+  const { data: nativeBalance } = useBalance({
+    address: address as `0x${string}` | undefined,
+    query: { enabled: !!address, refetchInterval: 10000 },
+  });
+
+  // ERC20 balances for displayed tokens (up to 6 tokens at once)
+  const erc20Tokens = [scSell, scBuy, sellToken, buyToken].filter(
+    t => t && t.address !== "0x0000000000000000000000000000000000000000"
+  ) as import("@/lib/across").TokenInfo[];
+
+  const uniqueErc20 = erc20Tokens.filter(
+    (t, i, arr) => arr.findIndex(x => x.address.toLowerCase() === t.address.toLowerCase() && x.chainId === t.chainId) === i
+  ).slice(0, 6);
+
+  const { data: erc20Results } = useReadContracts({
+    contracts: uniqueErc20.map(t => ({
+      address: t.address as `0x${string}`,
+      abi: [{
+        name: "balanceOf",
+        type: "function",
+        stateMutability: "view",
+        inputs: [{ name: "account", type: "address" }],
+        outputs: [{ name: "", type: "uint256" }],
+      }] as const,
+      functionName: "balanceOf",
+      args: [address as `0x${string}`],
+      chainId: t.chainId,
+    })),
+    query: { enabled: !!address && uniqueErc20.length > 0, refetchInterval: 10000 },
+  });
+
+  // Helper: get formatted balance for a token
+  function getTokenBalance(token: import("@/lib/across").TokenInfo | null): string {
+    if (!address || !token) return "0.00";
+    const isNative = token.address === "0x0000000000000000000000000000000000000000";
+    if (isNative && nativeBalance && token.chainId === chainId) {
+      const val = parseFloat(nativeBalance.formatted);
+      return val === 0 ? "0.00" : val < 0.0001 ? "<0.0001" : val.toFixed(4);
+    }
+    const idx = uniqueErc20.findIndex(
+      t => t.address.toLowerCase() === token.address.toLowerCase() && t.chainId === token.chainId
+    );
+    if (idx === -1 || !erc20Results?.[idx]?.result) return "0.00";
+    const raw = erc20Results[idx].result as bigint;
+    const val = Number(raw) / Math.pow(10, token.decimals);
+    return val === 0 ? "0.00" : val < 0.0001 ? "<0.0001" : val > 1000 ? val.toLocaleString("en-US", { maximumFractionDigits: 2 }) : val.toFixed(4);
+  }
 
   // Pickers
   const [showPicker, setShowPicker] = useState<
@@ -285,7 +337,7 @@ export default function SwapPage() {
                     placeholder="0.0"
                     style={{ background: "none", border: "none", outline: "none", fontSize: 76, fontWeight: 800, color: scSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-2px" }}
                   />
-                  <div style={{ fontSize: 13, color: scSellText, opacity: 0.55, marginTop: 6 }}>Balance: 0.00</div>
+                  <div style={{ fontSize: 13, color: scSellText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(scSell)}</div>
                 </div>
               </div>
               {/* Flip */}
@@ -297,7 +349,7 @@ export default function SwapPage() {
                   <div style={{ fontSize: 76, fontWeight: 800, color: scBuyText, lineHeight: 1.05, minHeight: 80, letterSpacing: "-2px" }}>
                     {scAmount && parseFloat(scAmount) > 0 ? <span style={{ opacity: 0.5 }}>...</span> : "0.0"}
                   </div>
-                  <div style={{ fontSize: 13, color: scBuyText, opacity: 0.55, marginTop: 6 }}>Balance: 0.00</div>
+                  <div style={{ fontSize: 13, color: scBuyText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(scBuy)}</div>
                   {scAmount && parseFloat(scAmount) > 0 && (
                     <div style={{ fontSize: 11, color: "#5BF3A0", fontWeight: 500, marginTop: 6 }}>Best price via Barter</div>
                   )}
@@ -327,7 +379,7 @@ export default function SwapPage() {
                     placeholder="0.0"
                     style={{ background: "none", border: "none", outline: "none", fontSize: 68, fontWeight: 800, color: ccSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-2px" }}
                   />
-                  <div style={{ fontSize: 13, color: ccSellText, opacity: 0.55, marginTop: 6 }}>Balance: 0.00</div>
+                  <div style={{ fontSize: 13, color: ccSellText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(sellToken)}</div>
                 </div>
               </div>
               {/* Flip */}
@@ -344,7 +396,7 @@ export default function SwapPage() {
                       : ccState === "success" && ccQuote ? fmtAmount(ccQuote.outputAmount, buyToken?.decimals ?? 18)
                       : "0.0"}
                   </div>
-                  <div style={{ fontSize: 13, color: ccBuyText, opacity: 0.55, marginTop: 6 }}>Balance: 0.00</div>
+                  <div style={{ fontSize: 13, color: ccBuyText, opacity: 0.55, marginTop: 6 }}>Balance: {getTokenBalance(buyToken)}</div>
                   {ccState === "success" && ccQuote && (
                     <div style={{ marginTop: 8, display: "flex", gap: 12, flexWrap: "wrap" }}>
                       <span style={{ fontSize: 11, color: "#5BF3A0", fontWeight: 600 }}>Via Across · ~{ccQuote.fillTimeSec}s</span>
