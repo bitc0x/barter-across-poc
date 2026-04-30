@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useAccount } from "wagmi";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton, useConnectModal } from "@rainbow-me/rainbowkit";
 import { BarterLogoMark, AcrossLogoMark } from "@/components/Logos";
 import {
   fetchChains, fetchTokensForChain, fetchSwapQuote,
@@ -18,7 +18,6 @@ interface CCQuote {
   outputAmount: number;
   minOutputAmount: number;
   feeTotalUsd: string;
-  feePct: number;
   fillTimeSec: number;
   swapTx: SwapQuote["swapTx"];
 }
@@ -52,6 +51,7 @@ export default function SwapPage() {
   const [theme, setTheme] = useState<Theme>("dark");
   const [tab, setTab] = useState<SwapTab>("swap");
   const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
 
   // Live chain/token data
   const [chains, setChains] = useState<ChainInfo[]>([]);
@@ -142,13 +142,10 @@ export default function SwapPage() {
 
         const outputAmount = fromUnits(data.expectedOutputAmount, buyToken.decimals);
         const minOutputAmount = fromUnits(data.minOutputAmount, buyToken.decimals);
-        const feePct = parseFloat(data.fees.total.pct) / 1e16;
-
         setCcQuote({
           outputAmount,
           minOutputAmount,
-          feeTotalUsd: parseFloat(data.fees.total.amountUsd).toFixed(4),
-          feePct,
+          feeTotalUsd: parseFloat(data.fees.total.amountUsd).toFixed(2),
           fillTimeSec: data.expectedFillTime,
           swapTx: data.swapTx,
         });
@@ -294,7 +291,7 @@ export default function SwapPage() {
               {/* Action card */}
               <ActionCard
                 isDark={isDark} ctaBg={ctaBg} ctaText={ctaText} cardR={cardR} cardH={cardH}
-                isConnected={isConnected} onConnect={() => {}}
+                isConnected={isConnected} onConnect={() => openConnectModal?.()}
                 label={!isConnected ? "Connect wallet" : scAmount && parseFloat(scAmount) > 0 ? "Swap" : "Enter amount"}
               />
             </div>
@@ -348,7 +345,7 @@ export default function SwapPage() {
               {/* Action card */}
               <ActionCard
                 isDark={isDark} ctaBg={ccCtaBg} ctaText={ccCtaText} cardR={cardR} cardH={cardH + 20}
-                isConnected={isConnected} onConnect={() => {}}
+                isConnected={isConnected} onConnect={() => openConnectModal?.()}
                 label={!isConnected ? "Connect wallet"
                   : !ccAmount ? "Enter amount"
                   : ccState === "loading" ? "Routing..."
@@ -383,7 +380,7 @@ export default function SwapPage() {
       {/* Footer */}
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, padding: "10px 24px", borderTop: `1px solid ${navBorder}`, background: navBg, display: "flex", alignItems: "center", gap: 6 }}>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={textMut} strokeWidth={2}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <span style={{ fontSize: 12, color: textMut }}>Block: 24,988,085</span>
+        <span style={{ fontSize: 12, color: textMut }}>Ethereum Mainnet</span>
       </div>
 
       {/* Pickers */}
@@ -458,8 +455,8 @@ function FlipBtn({ onClick, isDark }: { onClick: () => void; isDark: boolean }) 
   );
 }
 
-function ActionCard({ isDark: _isDark, ctaBg, ctaText, cardR, cardH, isConnected, onConnect, label, showAcrossLogo }: {
-  isDark: boolean; ctaBg: string; ctaText: string; cardR: number; cardH: number;
+function ActionCard({ ctaBg, ctaText, cardR, cardH, isConnected, onConnect, label, showAcrossLogo }: {
+  isDark?: boolean; ctaBg: string; ctaText: string; cardR: number; cardH: number;
   isConnected: boolean; onConnect: () => void; label: string; showAcrossLogo?: boolean;
 }) {
   return (
