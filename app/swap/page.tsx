@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useSendTransaction } from "wagmi";
 import { ConnectButton, useConnectModal } from "@rainbow-me/rainbowkit";
 import { BarterLogoMark, AcrossLogoMark } from "@/components/Logos";
 import {
@@ -52,6 +52,8 @@ export default function SwapPage() {
   const [tab, setTab] = useState<SwapTab>("swap");
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const { sendTransaction, isPending: isTxPending, isSuccess: isTxSuccess, error: txError } = useSendTransaction();
+  const [txHash, setTxHash] = useState<string | null>(null);
 
   // Live chain/token data
   const [chains, setChains] = useState<ChainInfo[]>([]);
@@ -156,6 +158,19 @@ export default function SwapPage() {
       }
     }, 600);
   }, [ccAmount, sellToken, buyToken, originChain, destChain, address]);
+
+  function executeSwap() {
+    if (!ccQuote?.swapTx || !isConnected) return;
+    const tx = ccQuote.swapTx;
+    sendTransaction({
+      to: tx.to as `0x${string}`,
+      data: tx.data as `0x${string}`,
+      value: BigInt(tx.value || "0"),
+      chainId: tx.chainId,
+    }, {
+      onSuccess: (hash) => setTxHash(hash),
+    });
+  }
 
   function flipChains() {
     const prev = originChain;
@@ -344,16 +359,43 @@ export default function SwapPage() {
               <div style={{ width: 12, flexShrink: 0 }} />
               {/* Action card */}
               <ActionCard
-                isDark={isDark} ctaBg={ccCtaBg} ctaText={ccCtaText} cardR={cardR} cardH={cardH + 20}
-                isConnected={isConnected} onConnect={() => openConnectModal?.()}
-                label={!isConnected ? "Connect wallet"
+                isDark={isDark} ctaBg={
+                  isTxSuccess ? "#22c55e"
+                  : isTxPending ? "#3a8a60"
+                  : ccCtaBg
+                }
+                ctaText={ccCtaText} cardR={cardR} cardH={cardH + 20}
+                isConnected={isConnected}
+                onConnect={() => openConnectModal?.()}
+                onExecute={ccState === "success" && !isTxPending && !isTxSuccess ? executeSwap : undefined}
+                label={
+                  isTxSuccess ? "Submitted!"
+                  : isTxPending ? "Confirm in wallet..."
+                  : txError ? "Rejected"
+                  : !isConnected ? "Connect wallet"
                   : !ccAmount ? "Enter amount"
                   : ccState === "loading" ? "Routing..."
                   : ccState === "success" ? `Bridge\n${originChain?.shortName} to\n${destChain?.shortName}`
                   : ccState === "error" ? "No route"
-                  : "Enter amount"}
-                showAcrossLogo={ccState === "success" && isConnected}
+                  : "Enter amount"
+                }
+                showAcrossLogo={ccState === "success" && !isTxPending && !isTxSuccess}
+                disabled={isTxPending}
               />
+            </div>
+          )}
+
+          {/* Tx hash confirmation */}
+          {txHash && (
+            <div style={{ textAlign: "center", marginTop: 12 }}>
+              <a
+                href={`https://etherscan.io/tx/${txHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: 11, color: "#5BF3A0", fontFamily: "monospace", textDecoration: "none" }}
+              >
+                Tx submitted: {txHash.slice(0, 10)}...{txHash.slice(-8)} (view on Etherscan)
+              </a>
             </div>
           )}
 
@@ -455,12 +497,23 @@ function FlipBtn({ onClick, isDark }: { onClick: () => void; isDark: boolean }) 
   );
 }
 
-function ActionCard({ ctaBg, ctaText, cardR, cardH, isConnected, onConnect, label, showAcrossLogo }: {
+function ActionCard({ ctaBg, ctaText, cardR, cardH, isConnected, onConnect, onExecute, label, showAcrossLogo, disabled }: {
   isDark?: boolean; ctaBg: string; ctaText: string; cardR: number; cardH: number;
-  isConnected: boolean; onConnect: () => void; label: string; showAcrossLogo?: boolean;
+  isConnected: boolean; onConnect: () => void; onExecute?: () => void;
+  label: string; showAcrossLogo?: boolean; disabled?: boolean;
 }) {
+  const clickable = !isConnected || !!onExecute;
   return (
-    <div onClick={!isConnected ? onConnect : undefined} style={{ width: 130, flexShrink: 0, background: ctaBg, borderRadius: cardR, minHeight: cardH, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: !isConnected ? "pointer" : "default", transition: "all 0.2s ease", gap: 8 }}>
+    <div
+      onClick={disabled ? undefined : !isConnected ? onConnect : onExecute}
+      style={{
+        width: 130, flexShrink: 0, background: ctaBg, borderRadius: cardR, minHeight: cardH,
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        cursor: disabled ? "not-allowed" : clickable ? "pointer" : "default",
+        opacity: disabled ? 0.7 : 1,
+        transition: "all 0.2s ease", gap: 8,
+      }}
+    >
       {showAcrossLogo && <AcrossLogoMark size={24} />}
       <span style={{ fontSize: 15, fontWeight: 700, color: ctaText, textAlign: "center", lineHeight: 1.35, padding: "0 12px", whiteSpace: "pre-line" }}>{label}</span>
     </div>
