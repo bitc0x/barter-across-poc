@@ -58,3 +58,23 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* RainbowKit ConnectButton - match Barter's orange pill style */
+#__next [data-rk] button[data-testid="rk-connect-button"],
+[data-rk] button[data-testid="rk-connect-button"] {
+  background: #FF8C20 !important;
+  color: #FFFFFF !important;
+  border-radius: 24px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  padding: 10px 22px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Account button when connected */
+[data-rk] button[data-testid="rk-account-button"] {
+  border-radius: 24px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}

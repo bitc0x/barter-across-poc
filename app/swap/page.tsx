@@ -22,21 +22,21 @@ interface CCQuote {
   swapTx: SwapQuote["swapTx"];
 }
 
-// ── Token colors for Barter-style cards ──────────────────────────────
+// ── Token colors - exact match to barterswap.xyz screenshots ─────────
 const TOKEN_BG_LIGHT: Record<string, string> = {
-  USDC: "#BFCFE8", WETH: "#C8D8C8", ETH: "#C8D8C8", USDT: "#C8E0C8",
-  DAI: "#E8D8A0", WBTC: "#F0C890", LINK: "#B8C8E8", UNI: "#E8B8D0",
-  ACX: "#C8D8F0", ARB: "#BDD0E8",
+  USDC: "#C8D4EC", WETH: "#D4D4E8", ETH: "#D4D4E8", USDT: "#C6E8D4",
+  DAI:  "#F0D8A8", WBTC: "#F0D0A0", LINK: "#C8D4EC", UNI:  "#ECC8D8",
+  ACX:  "#C8D4EC", ARB:  "#C8D8EC",
 };
 const TOKEN_BG_DARK: Record<string, string> = {
-  USDC: "#4A6080", WETH: "#4A6050", ETH: "#4A6050", USDT: "#3A6050",
-  DAI: "#907830", WBTC: "#905030", LINK: "#3A5070", UNI: "#703050",
-  ACX: "#3A5080", ARB: "#3A5070",
+  USDC: "#384870", WETH: "#484C68", ETH: "#484C68", USDT: "#2A6648",
+  DAI:  "#7A5A20", WBTC: "#7A4018", LINK: "#384870", UNI:  "#682848",
+  ACX:  "#384870", ARB:  "#304870",
 };
 const TOKEN_TEXT_LIGHT: Record<string, string> = {
-  USDC: "#1A3A5C", WETH: "#1A3A1A", ETH: "#1A3A1A", USDT: "#1A3A1A",
-  DAI: "#5A4000", WBTC: "#5A2800", LINK: "#1A3050", UNI: "#5A1040",
-  ACX: "#1A3060", ARB: "#1A3050",
+  USDC: "#1A2A4A", WETH: "#1A1A3A", ETH: "#1A1A3A", USDT: "#0A3020",
+  DAI:  "#4A3000", WBTC: "#4A2000", LINK: "#1A2A4A", UNI:  "#3A0820",
+  ACX:  "#1A2A4A", ARB:  "#1A2840",
 };
 
 function tokenBg(symbol: string, isDark: boolean) {
@@ -202,16 +202,16 @@ export default function SwapPage() {
   const isDark = theme === "dark";
 
   // Theme tokens
-  const bg        = isDark ? "#1a1a1a" : "#F2ECE4";
-  const navBg     = isDark ? "#141414" : "#FFFFFF";
-  const navBorder = isDark ? "#2a2a2a" : "#E8E0D8";
-  const textPri   = isDark ? "#FFFFFF" : "#1A1A1A";
-  const textMut   = isDark ? "#888888" : "#888888";
-  const ctaBg     = isDark ? "#9CA3AF" : "#FF8C20";
-  const ctaText   = isDark ? "#1a1a1a" : "#FFFFFF";
-  const tabBg     = isDark ? "#1f1f1f" : "#EDE7DF";
-  const tabBorder = isDark ? "#333333" : "#D8D0C8";
-  const tabActive = isDark ? "#2a2a2a" : "#FFFFFF";
+  const bg        = isDark ? "#18181C" : "#EEE8DF";
+  const navBg     = isDark ? "#1E1E24" : "#FFFFFF";
+  const navBorder = isDark ? "#2A2A34" : "#E4DDD4";
+  const textPri   = isDark ? "#FFFFFF" : "#111111";
+  const textMut   = isDark ? "#7A7A8A" : "#888888";
+  const ctaBg     = isDark ? "#72728A" : "#FF8C20";
+  const ctaText   = isDark ? "#FFFFFF" : "#FFFFFF";
+  const tabBg     = isDark ? "#24242C" : "#E8E2D8";
+  const tabBorder = isDark ? "#34343E" : "#CCC6BC";
+  const tabActive = isDark ? "#2E2E38" : "#FFFFFF";
   const cardR     = 20;
   const cardH     = 260;
 
@@ -239,7 +239,7 @@ export default function SwapPage() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <BarterLogoMark size={22} />
-          <span style={{ fontWeight: 700, fontSize: 18, color: "#FF8C20" }}>Barter</span>
+          <span style={{ fontWeight: 800, fontSize: 20, color: "#FF8C20", letterSpacing: "-0.5px" }}>Barter</span>
           <span style={{ fontSize: 10, fontWeight: 600, color: "#FF8C20", background: isDark ? "#2a1a00" : "#FFF0E0", border: "1px solid #FF8C20", borderRadius: 4, padding: "1px 5px" }}>Beta</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
@@ -277,27 +277,27 @@ export default function SwapPage() {
             /* ── Same-chain ─────────────────────────────── */
             <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
               {/* Sell */}
-              <div style={{ flex: "1 1 0", background: scSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ flex: "1 1 0", background: scSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
                 <TokenSelector token={scSell} onClick={() => setShowPicker("scSell")} textColor={scSellText} />
                 <div>
                   <input
                     type="number" value={scAmount} onChange={e => setScAmount(e.target.value)}
                     placeholder="0.0"
-                    style={{ background: "none", border: "none", outline: "none", fontSize: 64, fontWeight: 700, color: scSellText, width: "100%", padding: 0, lineHeight: 1.1, fontFamily: "inherit" }}
+                    style={{ background: "none", border: "none", outline: "none", fontSize: 76, fontWeight: 800, color: scSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-2px" }}
                   />
-                  <div style={{ fontSize: 12, color: scSellText, opacity: 0.6, marginTop: 4 }}>Balance: 0.00</div>
+                  <div style={{ fontSize: 13, color: scSellText, opacity: 0.55, marginTop: 6 }}>Balance: 0.00</div>
                 </div>
               </div>
               {/* Flip */}
               <FlipBtn onClick={flipSameChain} isDark={isDark} />
               {/* Buy */}
-              <div style={{ flex: "1 1 0", background: scBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ flex: "1 1 0", background: scBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
                 <TokenSelector token={scBuy} onClick={() => setShowPicker("scBuy")} textColor={scBuyText} />
                 <div>
-                  <div style={{ fontSize: 64, fontWeight: 700, color: scBuyText, lineHeight: 1.1, minHeight: 70 }}>
+                  <div style={{ fontSize: 76, fontWeight: 800, color: scBuyText, lineHeight: 1.05, minHeight: 80, letterSpacing: "-2px" }}>
                     {scAmount && parseFloat(scAmount) > 0 ? <span style={{ opacity: 0.5 }}>...</span> : "0.0"}
                   </div>
-                  <div style={{ fontSize: 12, color: scBuyText, opacity: 0.6, marginTop: 4 }}>Balance: 0.00</div>
+                  <div style={{ fontSize: 13, color: scBuyText, opacity: 0.55, marginTop: 6 }}>Balance: 0.00</div>
                   {scAmount && parseFloat(scAmount) > 0 && (
                     <div style={{ fontSize: 11, color: "#5BF3A0", fontWeight: 500, marginTop: 6 }}>Best price via Barter</div>
                   )}
@@ -316,7 +316,7 @@ export default function SwapPage() {
             /* ── Cross-chain ────────────────────────────── */
             <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
               {/* Origin */}
-              <div style={{ flex: "1 1 0", background: ccSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ flex: "1 1 0", background: ccSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <TokenSelector token={sellToken} onClick={() => setShowPicker("ccSell")} textColor={ccSellText} />
                   <ChainSelector chain={originChain} onClick={() => setShowPicker("ccOriginChain")} isDark={isDark} />
@@ -325,26 +325,26 @@ export default function SwapPage() {
                   <input
                     type="number" value={ccAmount} onChange={e => setCcAmount(e.target.value)}
                     placeholder="0.0"
-                    style={{ background: "none", border: "none", outline: "none", fontSize: 56, fontWeight: 700, color: ccSellText, width: "100%", padding: 0, lineHeight: 1.15, fontFamily: "inherit" }}
+                    style={{ background: "none", border: "none", outline: "none", fontSize: 68, fontWeight: 800, color: ccSellText, width: "100%", padding: 0, lineHeight: 1.05, fontFamily: "inherit", letterSpacing: "-2px" }}
                   />
-                  <div style={{ fontSize: 12, color: ccSellText, opacity: 0.6, marginTop: 4 }}>Balance: 0.00</div>
+                  <div style={{ fontSize: 13, color: ccSellText, opacity: 0.55, marginTop: 6 }}>Balance: 0.00</div>
                 </div>
               </div>
               {/* Flip */}
               <FlipBtn onClick={flipChains} isDark={isDark} />
               {/* Destination */}
-              <div style={{ flex: "1 1 0", background: ccBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div style={{ flex: "1 1 0", background: ccBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <TokenSelector token={buyToken} onClick={() => setShowPicker("ccBuy")} textColor={ccBuyText} />
                   <ChainSelector chain={destChain} onClick={() => setShowPicker("ccDestChain")} isDark={isDark} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 56, fontWeight: 700, color: ccBuyText, lineHeight: 1.15, minHeight: 66 }}>
+                  <div style={{ fontSize: 68, fontWeight: 800, color: ccBuyText, lineHeight: 1.05, minHeight: 72, letterSpacing: "-2px" }}>
                     {ccState === "loading" ? <span style={{ opacity: 0.4, fontSize: 36 }}>...</span>
                       : ccState === "success" && ccQuote ? fmtAmount(ccQuote.outputAmount, buyToken?.decimals ?? 18)
                       : "0.0"}
                   </div>
-                  <div style={{ fontSize: 12, color: ccBuyText, opacity: 0.6, marginTop: 4 }}>Balance: 0.00</div>
+                  <div style={{ fontSize: 13, color: ccBuyText, opacity: 0.55, marginTop: 6 }}>Balance: 0.00</div>
                   {ccState === "success" && ccQuote && (
                     <div style={{ marginTop: 8, display: "flex", gap: 12, flexWrap: "wrap" }}>
                       <span style={{ fontSize: 11, color: "#5BF3A0", fontWeight: 600 }}>Via Across · ~{ccQuote.fillTimeSec}s</span>
@@ -471,7 +471,7 @@ function TabPill({ label, active, onClick, isDark, tabActive, textPri, textMut, 
 
 function TokenSelector({ token, onClick, textColor }: { token: TokenInfo | null; onClick: () => void; textColor: string }) {
   return (
-    <button onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.2)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 20, padding: "5px 10px 5px 6px", cursor: "pointer", color: textColor }}>
+    <button onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.45)", backdropFilter: "blur(8px)", border: "1.5px solid rgba(255,255,255,0.6)", borderRadius: 20, padding: "5px 10px 5px 6px", cursor: "pointer", color: textColor, fontFamily: "inherit" }}>
       {token ? (
         <img src={token.logoUrl} alt={token.symbol} width={22} height={22} style={{ borderRadius: 11, flexShrink: 0 }} onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
       ) : (
