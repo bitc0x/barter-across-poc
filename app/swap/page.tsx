@@ -48,7 +48,7 @@ function tokenText(symbol: string, isDark: boolean) {
 
 // ── Main component ────────────────────────────────────────────────────
 export default function SwapPage() {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
   const [tab, setTab] = useState<SwapTab>("swap");
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
@@ -330,7 +330,7 @@ export default function SwapPage() {
             <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
               {/* Sell */}
               <div style={{ flex: "1 1 0", background: scSellBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
-                <TokenSelector token={scSell} onClick={() => setShowPicker("scSell")} textColor={scSellText} />
+                <div><TokenSelector token={scSell} onClick={() => setShowPicker("scSell")} textColor={scSellText} /></div>
                 <div>
                   <input
                     type="number" value={scAmount} onChange={e => setScAmount(e.target.value)}
@@ -344,7 +344,7 @@ export default function SwapPage() {
               <FlipBtn onClick={flipSameChain} isDark={isDark} />
               {/* Buy */}
               <div style={{ flex: "1 1 0", background: scBuyBg, borderRadius: cardR, padding: 24, minHeight: cardH, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "2px solid rgba(255,255,255,0.7)", boxShadow: isDark ? "none" : "0 2px 12px rgba(0,0,0,0.08)" }}>
-                <TokenSelector token={scBuy} onClick={() => setShowPicker("scBuy")} textColor={scBuyText} />
+                <div><TokenSelector token={scBuy} onClick={() => setShowPicker("scBuy")} textColor={scBuyText} /></div>
                 <div>
                   <div style={{ fontSize: 76, fontWeight: 800, color: scBuyText, lineHeight: 1.05, minHeight: 80, letterSpacing: "-2px" }}>
                     {scAmount && parseFloat(scAmount) > 0 ? <span style={{ opacity: 0.5 }}>...</span> : "0.0"}
