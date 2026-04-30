@@ -401,15 +401,7 @@ export default function SwapPage() {
             </div>
           )}
 
-          {/* CC nudge */}
-          {tab === "swap" && (
-            <div style={{ textAlign: "center", marginTop: 20 }}>
-              <button onClick={() => setTab("crosschain")} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#5BF3A0", display: "inline-flex", alignItems: "center", gap: 6 }}>
-                <AcrossLogoMark size={14} />
-                Token on a different chain? Try Cross-chain
-              </button>
-            </div>
-          )}
+
           {tab === "crosschain" && (
             <div style={{ textAlign: "center", marginTop: 16 }}>
               <span style={{ fontSize: 11, color: textMut, display: "inline-flex", alignItems: "center", gap: 5 }}>
