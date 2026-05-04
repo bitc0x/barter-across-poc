@@ -279,7 +279,7 @@ export default function SwapPage() {
           setCcQuote(null);
           setCcState("idle");
           resetTx();
-        }, 6000);
+        }, 60000); // 60s - enough time to click Etherscan link in a demo
       },
     });
   }
