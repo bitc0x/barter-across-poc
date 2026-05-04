@@ -506,12 +506,12 @@ export default function SwapPage() {
           {txHash && (
             <div style={{ textAlign: "center", marginTop: 12 }}>
               <a
-                href={`https://etherscan.io/tx/${txHash}`}
+                href={`https://app.across.to/transfer/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ fontSize: 11, color: "#5BF3A0", fontFamily: "monospace", textDecoration: "none" }}
               >
-                Tx submitted: {txHash.slice(0, 10)}...{txHash.slice(-8)} (view on Etherscan)
+                Tx submitted: {txHash.slice(0, 10)}...{txHash.slice(-8)} (view on Across)
               </a>
             </div>
           )}

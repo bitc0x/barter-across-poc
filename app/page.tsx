@@ -298,11 +298,11 @@ export default function Home() {
             Open live demo
             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>
-          <a href="https://etherscan.io/tx/0x06f00efc6dc885893922b3069dd451c9948280f35403bba0b6ab8d0b94556db2" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", fontSize: 13, padding: "12px 24px", borderRadius: 10, fontFamily: "monospace", textDecoration: "none", overflow: "hidden", maxWidth: "100%" }}
+          <a href="https://app.across.to/transfer/0x06f00efc6dc885893922b3069dd451c9948280f35403bba0b6ab8d0b94556db2" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", fontSize: 13, padding: "12px 24px", borderRadius: 10, fontFamily: "monospace", textDecoration: "none", overflow: "hidden", maxWidth: "100%" }}
             onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(91,243,160,0.3)")}
             onMouseLeave={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
           >
-            Confirmed on-chain · tx: 0x06f00efc...db2 ↗
+            View on Across · 0x06f00efc...db2 ↗
           </a>
         </div>
       </section>
