@@ -88,11 +88,17 @@ export default function Home() {
           <span style={{ fontWeight: 600, fontSize: 14, color: "#5BF3A0" }}>Across</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          {["Security", "Speed", "Architecture", "Revenue", "Exclusive Routes"].map(l => (
-            <a key={l} href={`#${l.toLowerCase().replace(" ", "-")}`} style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+          {[
+            { label: "Security", href: "#security" },
+            { label: "Speed", href: "#speed" },
+            { label: "Architecture", href: "#architecture" },
+            { label: "Revenue", href: "#revenue" },
+            { label: "Exclusive Routes", href: "#exclusive-routes" },
+          ].map(l => (
+            <a key={l.label} href={l.href} style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
               onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
-            >{l}</a>
+            >{l.label}</a>
           ))}
           <Link href="/swap" style={{ background: "#5BF3A0", color: "#0A0E14", fontWeight: 700, fontSize: 13, padding: "7px 16px", borderRadius: 8, textDecoration: "none" }}>
             Live demo
