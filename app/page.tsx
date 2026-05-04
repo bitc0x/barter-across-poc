@@ -159,7 +159,7 @@ export default function Home() {
                 <span style={{ fontWeight: 700, color: "#FF8C20" }}>Barter loses users to competitors.</span>
               </h2>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 24px 0" }}>
-                They hold USDC on Arbitrum. They want to buy a token that trades on Ethereum mainnet. Barter cannot execute that trade today. So they open a separate app, bridge manually, and complete the swap somewhere else.
+                They hold ETH on Ethereum. They want to buy a token on Arbitrum. Barter cannot execute that trade today. So they open a separate app, bridge manually, and complete the swap somewhere else.
               </p>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: 0 }}>
                 That session is gone. That user associated the friction with Barter's product. Some percentage of them do not come back.
@@ -237,18 +237,18 @@ export default function Home() {
 
             {/* Mock of the swap UI */}
             <div style={{ display: "flex", gap: 8, alignItems: "stretch", maxWidth: 780 }}>
-              {/* Sell card */}
-              <div style={{ flex: 1, background: "#384870", borderRadius: 16, padding: "20px 24px", border: "2px solid rgba(255,255,255,0.12)" }}>
+              {/* Sell card - ETH on Ethereum */}
+              <div style={{ flex: 1, background: "#46485E", borderRadius: 16, padding: "20px 24px", border: "2px solid rgba(255,255,255,0.12)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
                   <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 14, padding: "4px 10px 4px 6px", display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ width: 18, height: 18, borderRadius: 9, background: "#2775CA", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#fff" }}>U</div>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>USDC</span>
+                    <div style={{ width: 18, height: 18, borderRadius: 9, background: "#627EEA", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#fff" }}>E</div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>ETH</span>
                     <span style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>▾</span>
                   </div>
-                  <div style={{ background: "rgba(91,243,160,0.12)", border: "1px solid rgba(91,243,160,0.25)", borderRadius: 10, padding: "3px 8px", fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", fontWeight: 600 }}>ARB</div>
+                  <div style={{ background: "rgba(91,243,160,0.12)", border: "1px solid rgba(91,243,160,0.25)", borderRadius: 10, padding: "3px 8px", fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", fontWeight: 600 }}>ETH</div>
                 </div>
-                <div style={{ fontSize: 64, fontWeight: 800, color: "#fff", letterSpacing: "-2px", lineHeight: 1, marginBottom: 8 }}>100</div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>Balance: 245.00</div>
+                <div style={{ fontSize: 64, fontWeight: 800, color: "#fff", letterSpacing: "-2px", lineHeight: 1, marginBottom: 8 }}>0.5</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>Balance: 1.24</div>
               </div>
 
               {/* Arrow */}
@@ -258,25 +258,25 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Buy card */}
-              <div style={{ flex: 1, background: "#46485E", borderRadius: 16, padding: "20px 24px", border: "2px solid rgba(255,255,255,0.12)" }}>
+              {/* Buy card - USDC on Arbitrum */}
+              <div style={{ flex: 1, background: "#364470", borderRadius: 16, padding: "20px 24px", border: "2px solid rgba(255,255,255,0.12)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
                   <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 14, padding: "4px 10px 4px 6px", display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ width: 18, height: 18, borderRadius: 9, background: "#627EEA", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#fff" }}>E</div>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>WETH</span>
+                    <div style={{ width: 18, height: 18, borderRadius: 9, background: "#2775CA", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#fff" }}>U</div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>USDC</span>
                     <span style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>▾</span>
                   </div>
-                  <div style={{ background: "rgba(91,243,160,0.12)", border: "1px solid rgba(91,243,160,0.25)", borderRadius: 10, padding: "3px 8px", fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", fontWeight: 600 }}>ETH</div>
+                  <div style={{ background: "rgba(91,243,160,0.12)", border: "1px solid rgba(91,243,160,0.25)", borderRadius: 10, padding: "3px 8px", fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", fontWeight: 600 }}>ARB</div>
                 </div>
-                <div style={{ fontSize: 64, fontWeight: 800, color: "#fff", letterSpacing: "-2px", lineHeight: 1, marginBottom: 4 }}>0.0292</div>
+                <div style={{ fontSize: 64, fontWeight: 800, color: "#fff", letterSpacing: "-2px", lineHeight: 1, marginBottom: 4 }}>1,243.18</div>
                 <div style={{ fontSize: 11, color: "#5BF3A0", fontWeight: 600, marginBottom: 4 }}>Via Across · ~2s · Fee $0.24</div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>Min: 0.0290</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>Min: 1,230.00</div>
               </div>
 
               {/* CTA */}
               <div style={{ width: 110, flexShrink: 0, background: "#5BF3A0", borderRadius: 16, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6 }}>
                 <div style={{ width: 20, height: 20 }}><AcrossLogoMark size={20} /></div>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#0a1a0a", textAlign: "center", lineHeight: 1.3 }}>Bridge ARB to ETH</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#0a1a0a", textAlign: "center", lineHeight: 1.3 }}>Bridge ETH to ARB</span>
               </div>
             </div>
 

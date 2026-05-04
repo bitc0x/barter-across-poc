@@ -173,8 +173,8 @@ export default function SwapPage() {
       setChains(cs);
       const arb = cs.find(c => c.chainId === 42161) || cs[0];
       const eth = cs.find(c => c.chainId === 1) || cs[1];
-      setOriginChain(arb);
-      setDestChain(eth);
+      setOriginChain(eth);
+      setDestChain(arb);
     });
     // Load Ethereum tokens for same-chain swap
     fetchTokensForChain(1).then(ts => {
@@ -191,7 +191,7 @@ export default function SwapPage() {
     if (!originChain) return;
     fetchTokensForChain(originChain.chainId).then(ts => {
       setOriginTokens(ts);
-      setSellToken(prev => ts.find(t => t.symbol === prev?.symbol) || ts.find(t => t.symbol === "USDC") || ts[0]);
+      setSellToken(prev => ts.find(t => t.symbol === prev?.symbol) || ts.find(t => t.symbol === "ETH") || ts.find(t => t.symbol === "WETH") || ts[0]);
     });
   }, [originChain]);
 
@@ -199,7 +199,7 @@ export default function SwapPage() {
     if (!destChain) return;
     fetchTokensForChain(destChain.chainId).then(ts => {
       setDestTokens(ts);
-      setBuyToken(prev => ts.find(t => t.symbol === prev?.symbol) || ts.find(t => t.symbol === "WETH") || ts[0]);
+      setBuyToken(prev => ts.find(t => t.symbol === prev?.symbol) || ts.find(t => t.symbol === "USDC") || ts[0]);
     });
   }, [destChain]);
 
