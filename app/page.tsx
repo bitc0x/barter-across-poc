@@ -155,8 +155,8 @@ export default function Home() {
             <div>
               <div style={{ fontSize: 11, fontFamily: "monospace", color: "rgba(255,140,32,0.8)", letterSpacing: 3, marginBottom: 24 }}>THE GAP</div>
               <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", fontWeight: 300, letterSpacing: "-1px", lineHeight: 1.2, margin: "0 0 36px 0" }}>
-                Right now, Barter users<br />
-                <span style={{ fontWeight: 700, color: "#FF8C20" }}>are leaving your UI.</span>
+                Every day without cross-chain,<br />
+                <span style={{ fontWeight: 700, color: "#FF8C20" }}>Barter loses users to competitors.</span>
               </h2>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 24px 0" }}>
                 They hold USDC on Arbitrum. They want to buy a token that trades on Ethereum mainnet. Barter cannot execute that trade today. So they open a separate app, bridge manually, and complete the swap somewhere else.
