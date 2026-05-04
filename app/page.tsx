@@ -347,7 +347,7 @@ export default function Home() {
           One API call.
         </h2>
         <h2 style={{ fontSize: "clamp(32px,4.5vw,56px)", fontWeight: 700, fontStyle: "italic", letterSpacing: "-1.5px", lineHeight: 1.1, color: "#5BF3A0", margin: "0 0 40px 0" }}>
-          Most teams ship in hours.
+          Go live in under an hour.
         </h2>
         <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", maxWidth: 680, lineHeight: 1.75, marginBottom: 48 }}>
           The entire cross-chain plus swap flow is a single GET to{" "}
@@ -358,7 +358,7 @@ export default function Home() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 40 }}>
           {[
             { label: "Integration surface", value: "1 endpoint", note: "GET /swap/approval handles the full cross-chain + swap flow" },
-            { label: "Typical time to production", value: "Hours", note: "Most teams are live same day. Complex frontend integrations in days." },
+            { label: "Typical time to production", value: "<1hr", note: "Per docs.across.to: go live in under an hour. Most teams ship same day." },
             { label: "Prerequisites", value: "None", note: "No SDK, no contract deployment, no registration. Public API." },
           ].map((item, i) => (
             <div key={i} style={{ padding: "24px 28px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12 }}>

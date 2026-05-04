@@ -147,7 +147,11 @@ export async function fetchSwapQuote(params: {
 // ── Utils ─────────────────────────────────────────────────────────────
 
 export function toUnits(amount: number, decimals: number): string {
-  return BigInt(Math.floor(amount * Math.pow(10, decimals))).toString();
+  // Use string manipulation to avoid float precision loss on large decimal counts
+  const [intPart, fracPart = ""] = amount.toString().split(".");
+  const frac = fracPart.padEnd(decimals, "0").slice(0, decimals);
+  const raw = BigInt(intPart) * BigInt(10 ** decimals) + BigInt(frac);
+  return raw.toString();
 }
 
 export function fromUnits(raw: string, decimals: number): number {

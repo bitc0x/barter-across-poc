@@ -240,7 +240,14 @@ export default function SwapPage() {
         });
         setCcState("success");
       } catch (e) {
-        setCcError(e instanceof Error ? e.message : "Quote failed");
+        setCcError(
+          e instanceof Error
+            ? e.message.includes("too low") ? "Amount too low for this route. Try a larger amount."
+              : e.message.includes("not supported") ? "Route not supported."
+              : e.message.includes("400") ? "Route unavailable. Try a different token or chain."
+              : "Quote failed. Please try again."
+            : "Quote failed."
+        );
         setCcState("error");
       }
     }, 600);
