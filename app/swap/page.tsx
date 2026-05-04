@@ -58,7 +58,9 @@ export default function SwapPage() {
 
   const { sendTransaction, reset: resetTx, isPending: isTxPending, isSuccess: isTxSuccess, error: txError } = useSendTransaction();
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [txLinkReady, setTxLinkReady] = useState(false);
   const clearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const linkRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Live chain/token data
   const [chains, setChains] = useState<ChainInfo[]>([]);
@@ -505,14 +507,20 @@ export default function SwapPage() {
           {/* Tx hash confirmation */}
           {txHash && (
             <div style={{ textAlign: "center", marginTop: 12 }}>
-              <a
-                href={`https://app.across.to/transfer/${txHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ fontSize: 11, color: "#5BF3A0", fontFamily: "monospace", textDecoration: "none" }}
-              >
-                Tx submitted: {txHash.slice(0, 10)}...{txHash.slice(-8)} (view on Across)
-              </a>
+              {txLinkReady ? (
+                <a
+                  href={`https://app.across.to/transfer/${txHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontSize: 11, color: "#5BF3A0", fontFamily: "monospace", textDecoration: "none" }}
+                >
+                  View transfer on Across ↗
+                </a>
+              ) : (
+                <span style={{ fontSize: 11, color: "rgba(91,243,160,0.5)", fontFamily: "monospace" }}>
+                  Indexing transfer... link ready in ~20s
+                </span>
+              )}
             </div>
           )}
 
