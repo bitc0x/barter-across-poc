@@ -154,11 +154,9 @@ export default function Home() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
             <div>
               <div style={{ fontSize: 11, fontFamily: "monospace", color: "rgba(255,140,32,0.8)", letterSpacing: 3, marginBottom: 24 }}>THE GAP</div>
-              <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", fontWeight: 300, letterSpacing: "-1px", lineHeight: 1.15, margin: "0 0 12px 0" }}>
-                Right now, a Barter user
-              </h2>
-              <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", fontWeight: 700, letterSpacing: "-1px", lineHeight: 1.15, color: "#FF8C20", margin: "0 0 36px 0" }}>
-                is leaving your UI.
+              <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", fontWeight: 300, letterSpacing: "-1px", lineHeight: 1.2, margin: "0 0 36px 0" }}>
+                Right now, a Barter user<br />
+                <span style={{ fontWeight: 700, color: "#FF8C20" }}>is leaving your UI.</span>
               </h2>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 24px 0" }}>
                 They hold USDC on Arbitrum. They want to buy a token that trades on Ethereum mainnet. Barter cannot execute that trade today. So they open a separate app, bridge manually, and complete the swap somewhere else.
