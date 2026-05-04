@@ -17,9 +17,9 @@ const PITCH = [
     accent: "green",
   },
   {
-    tag: "The reciprocal deal",
-    title: "Barter becomes a Swap API provider for Across.",
-    body: "Across's Swap API routes through 0x, LiFi, and Uniswap today. Adding Barter's Superposition liquidity, wallet-native and exclusively accessible through Barter's router, gives every Across integrator a source of price improvement no other aggregator can match.",
+    tag: "The moat",
+    title: "A security story your competitors cannot replicate.",
+    body: "Relay and other bridges have lock-and-mint exposure and a combined $2.9B in industry exploits. Across has never been exploited across $35B+ bridged. Adding Across gives Barter a verifiable, differentiated security guarantee built into the product.",
     accent: "blue",
   },
 ];
@@ -114,7 +114,7 @@ export default function Home() {
           <span className="text-barter-orange">cross-chain.</span>
         </h1>
         <p className="text-xl text-barter-sub max-w-2xl mb-4 leading-relaxed">
-          Barter has the best same-chain execution on Ethereum. Across has the fastest, cheapest crosschain rails on L2s. This is what they look like together.
+          Barter has the best same-chain execution on Ethereum. Across has the fastest, safest crosschain rails on L2s. This is what they look like together.
         </p>
         <p className="text-sm text-barter-muted max-w-2xl mb-12 font-mono">
           Functional proof of concept by Across Protocol BD. The cross-chain tab in the swap interface is wired to the live Across API.
@@ -134,9 +134,9 @@ export default function Home() {
       <section id="pitch" className="px-6 pb-24 max-w-6xl mx-auto">
         <div className="mb-12">
           <div className="text-xs font-mono text-barter-orange tracking-widest uppercase mb-3">The partnership</div>
-          <h2 className="text-4xl font-bold text-barter-text mb-4">Two-sided. Structural. Exclusive.</h2>
+          <h2 className="text-4xl font-bold text-barter-text mb-4">Three reasons. One integration.</h2>
           <p className="text-barter-sub text-lg max-w-2xl">
-            Not a generic bridge widget. A mutual infrastructure deal where both protocols gain something no competitor can replicate.
+            Barter becomes the only DEX aggregator where users can source, bridge, and execute across any chain without leaving the interface.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-4">
