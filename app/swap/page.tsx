@@ -59,6 +59,7 @@ export default function SwapPage() {
   const { sendTransaction, reset: resetTx, isPending: isTxPending, isSuccess: isTxSuccess, error: txError } = useSendTransaction();
   const [txHash, setTxHash] = useState<string | null>(null);
   const [txLinkReady, setTxLinkReady] = useState(false);
+  const [preTxBalance, setPreTxBalance] = useState<string | null>(null);
   const clearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const linkRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -97,6 +98,36 @@ export default function SwapPage() {
     chainId: originChain?.chainId,
     query: { enabled: !!address && !!originChain, refetchInterval: 12000 },
   });
+
+  // Fast-poll dest token balance while waiting for fill
+  const isNativeDest = buyToken?.address === "0x0000000000000000000000000000000000000000";
+  const { data: destNativeBal, refetch: refetchDestNative } = useBalance({
+    address: address as `0x${string}` | undefined,
+    chainId: destChain?.chainId,
+    query: { enabled: !!address && !!destChain && !!txHash && !txLinkReady && isNativeDest, refetchInterval: 2000 },
+  });
+  const { data: destErc20Bal, refetch: refetchDestErc20 } = useReadContracts({
+    contracts: buyToken && !isNativeDest ? [{
+      address: buyToken.address as `0x${string}`,
+      abi: [{ name: "balanceOf", type: "function", stateMutability: "view", inputs: [{ name: "account", type: "address" }], outputs: [{ name: "", type: "uint256" }] }] as const,
+      functionName: "balanceOf",
+      args: [address as `0x${string}`],
+      chainId: destChain?.chainId,
+    }] : [],
+    query: { enabled: !!address && !!buyToken && !isNativeDest && !!txHash && !txLinkReady, refetchInterval: 2000 },
+  });
+
+  // Watch for balance increase on dest - mark link ready immediately when fill detected
+  useEffect(() => {
+    if (!txHash || txLinkReady || !preTxBalance) return;
+    const currentRaw = isNativeDest
+      ? destNativeBal?.value?.toString() ?? null
+      : (destErc20Bal?.[0]?.result as bigint | undefined)?.toString() ?? null;
+    if (currentRaw && BigInt(currentRaw) > BigInt(preTxBalance)) {
+      setTxLinkReady(true);
+      if (linkRef.current) clearTimeout(linkRef.current);
+    }
+  }, [txHash, txLinkReady, preTxBalance, isNativeDest, destNativeBal, destErc20Bal]);
 
   // Stable list of unique ERC20 tokens to query - memoized so contracts array
   // identity is stable and useReadContracts doesn't re-fire on every render
@@ -264,6 +295,11 @@ export default function SwapPage() {
       setCcError("Quote expired. Enter amount again for a fresh quote.");
       return;
     }
+    // Snapshot current dest balance so we can detect the fill
+    const snapRaw = isNativeDest
+      ? destNativeBal?.value?.toString() ?? "0"
+      : (destErc20Bal?.[0]?.result as bigint | undefined)?.toString() ?? "0";
+    setPreTxBalance(snapRaw);
     const tx = ccQuote.swapTx;
     sendTransaction({
       to: tx.to as `0x${string}`,
