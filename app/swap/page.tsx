@@ -355,7 +355,17 @@ export default function SwapPage() {
               {item}
             </button>
           ))}
-          <ConnectButton
+          <a href="/" style={{
+            fontSize: 13, color: "rgba(255,255,255,0.4)", textDecoration: "none",
+            display: "flex", alignItems: "center", gap: 5,
+            transition: "color 0.15s",
+          }}
+            onMouseEnter={e => (e.currentTarget.style.color = "rgba(255,255,255,0.8)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}
+          >
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            Back to pitch
+          </a>
             accountStatus="address"
             chainStatus="none"
             showBalance={false}
