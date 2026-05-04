@@ -88,7 +88,7 @@ export default function Home() {
           <span style={{ fontWeight: 600, fontSize: 14, color: "#5BF3A0" }}>Across</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          {["Security", "Architecture", "Revenue", "Exclusive Routes"].map(l => (
+          {["Security", "Speed", "Architecture", "Revenue", "Exclusive Routes"].map(l => (
             <a key={l} href={`#${l.toLowerCase().replace(" ", "-")}`} style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
               onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
@@ -191,9 +191,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 02 ARCHITECTURE ── */}
+      {/* ── 02 SPEED & SLA ── */}
+      <section id="speed" style={{ padding: "100px 48px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 24 }}>02 / SPEED & RELIABILITY</div>
+        <h2 style={{ fontSize: "clamp(32px,4.5vw,56px)", fontWeight: 200, letterSpacing: "-1.5px", lineHeight: 1.1, margin: "0 0 8px 0" }}>
+          The fastest crosschain
+        </h2>
+        <h2 style={{ fontSize: "clamp(32px,4.5vw,56px)", fontWeight: 700, fontStyle: "italic", letterSpacing: "-1.5px", lineHeight: 1.1, color: "#5BF3A0", margin: "0 0 40px 0" }}>
+          infrastructure in production.
+        </h2>
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", maxWidth: 680, lineHeight: 1.75, marginBottom: 64 }}>
+          Relayer competition drives fills to their execution floor. There is no sequencer queue, no messaging delay, no waiting for validator confirmation. The relayer funds the destination the moment the intent is submitted. P50 fill time on major L2 routes is under 2 seconds.
+        </p>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, overflow: "hidden", marginBottom: 40 }}>
+          {[
+            { label: "MEDIAN FILL TIME", value: "<2", unit: "sec", note: "P50 on major L2 routes. Relayer funds destination before origin chain confirms." },
+            { label: "PROTOCOL UPTIME", value: "99.99", unit: "%", note: "Maintained since 2021 mainnet launch. Continuously operational through every market event." },
+            { label: "API RESPONSE · P90", value: "<650", unit: "ms", note: "90% of API calls served under 650ms. Sub-second quote-to-fill for real-time UX." },
+          ].map((m, i) => (
+            <div key={i} style={{ padding: "32px 28px", background: "rgba(255,255,255,0.02)", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+              <div style={{ fontSize: 10, fontFamily: "monospace", color: "rgba(255,255,255,0.25)", letterSpacing: 2, marginBottom: 20 }}>{m.label}</div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 16 }}>
+                <span style={{ fontSize: 48, fontWeight: 700, color: "#5BF3A0", letterSpacing: "-2px", fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>{m.value}</span>
+                <span style={{ fontSize: 18, color: "#5BF3A0", fontWeight: 400 }}>{m.unit}</span>
+              </div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.65 }}>{m.note}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* SLA callout */}
+        <div style={{ padding: "28px 32px", background: "rgba(91,243,160,0.04)", border: "1px solid rgba(91,243,160,0.12)", borderRadius: 14 }}>
+          <div style={{ fontSize: 10, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 12 }}>ENTERPRISE SLAS</div>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.75, margin: 0 }}>
+            Across operates against strict service-level commitments for its largest integrators, including dedicated engineering response under one hour for P1 incidents and committed uptime guarantees in writing. The same standards are available to Barter from day one.
+          </p>
+        </div>
+      </section>
+
+      {/* ── 03 ARCHITECTURE ── */}
       <section id="architecture" style={{ padding: "100px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 24 }}>02 / ARCHITECTURE</div>
+        <div style={{ fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 24 }}>03 / ARCHITECTURE</div>
         <h2 style={{ fontSize: "clamp(32px,4.5vw,56px)", fontWeight: 200, letterSpacing: "-1.5px", lineHeight: 1.1, margin: "0 0 8px 0" }}>
           Three settlement mechanisms.
         </h2>
@@ -231,7 +270,7 @@ export default function Home() {
 
       {/* ── 03 REVENUE ── */}
       <section id="revenue" style={{ padding: "100px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 24 }}>03 / REVENUE & COST</div>
+        <div style={{ fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 24 }}>04 / REVENUE & COST & COST</div>
         <h2 style={{ fontSize: "clamp(32px,4.5vw,56px)", fontWeight: 200, letterSpacing: "-1.5px", lineHeight: 1.1, margin: "0 0 8px 0" }}>
           Free to integrate.
         </h2>
@@ -267,7 +306,7 @@ export default function Home() {
 
       {/* ── 04 EXCLUSIVE ROUTES ── */}
       <section id="exclusive-routes" style={{ padding: "100px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 24 }}>04 / EXCLUSIVE ROUTES</div>
+        <div style={{ fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 24 }}>05 / EXCLUSIVE ROUTES</div>
         <h2 style={{ fontSize: "clamp(32px,4.5vw,56px)", fontWeight: 200, letterSpacing: "-1.5px", lineHeight: 1.1, margin: "0 0 8px 0" }}>
           Routes no other aggregator
         </h2>
@@ -301,33 +340,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 06 THE INTEGRATION ── */}
+      {/* ── 05 THE INTEGRATION ── */}
       <section style={{ padding: "100px 48px", maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 24 }}>05 / THE INTEGRATION</div>
+        <div style={{ fontSize: 11, fontFamily: "monospace", color: "#5BF3A0", letterSpacing: 3, marginBottom: 24 }}>06 / THE INTEGRATION</div>
         <h2 style={{ fontSize: "clamp(32px,4.5vw,56px)", fontWeight: 200, letterSpacing: "-1.5px", lineHeight: 1.1, margin: "0 0 8px 0" }}>
           One API call.
         </h2>
         <h2 style={{ fontSize: "clamp(32px,4.5vw,56px)", fontWeight: 700, fontStyle: "italic", letterSpacing: "-1.5px", lineHeight: 1.1, color: "#5BF3A0", margin: "0 0 40px 0" }}>
-          Shipped in weeks.
+          Most teams ship in hours.
         </h2>
-        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", maxWidth: 680, lineHeight: 1.75, marginBottom: 64 }}>
-          The entire cross-chain plus swap flow is handled by a single GET to <code style={{ background: "rgba(91,243,160,0.1)", color: "#5BF3A0", padding: "1px 6px", borderRadius: 4 }}>/swap/approval</code>. It returns a quote, an executable transaction, and a fill-time estimate. Barter's frontend calls it, shows the user the output, and submits. That is the full integration surface.
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", maxWidth: 680, lineHeight: 1.75, marginBottom: 48 }}>
+          The entire cross-chain plus swap flow is a single GET to{" "}
+          <code style={{ background: "rgba(91,243,160,0.1)", color: "#5BF3A0", padding: "1px 6px", borderRadius: 4 }}>/swap/approval</code>.
+          {" "}It returns a quote, an executable transaction, and a fill-time estimate. Barter's frontend calls it, shows the user the output, and submits. That is the full integration surface. No smart-contract deployment, no SDK install, no approval process. Public API, permissionless, live today.
         </p>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 2, border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, overflow: "hidden", marginBottom: 40 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 40 }}>
           {[
-            { n: "01", title: "Intro call", body: "Walk through the live demo together. Confirm integration scope and timeline." },
-            { n: "02", title: "Technical scoping", body: "Across engineering works directly with Barter's team. Integration surface is a single API endpoint. Typical timeline: 2–4 weeks to production." },
-            { n: "03", title: "Mainnet launch", body: "Barter ships cross-chain swaps powered by Across. Joint announcement to both communities." },
-          ].map((s, i) => (
-            <div key={i} style={{ padding: "32px 28px", background: "rgba(255,255,255,0.02)", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
-              <div style={{ fontSize: 36, fontWeight: 700, color: "#5BF3A0", letterSpacing: "-1px", marginBottom: 24, fontVariantNumeric: "tabular-nums" }}>{s.n}</div>
-              <div style={{ width: "100%", height: 1, background: "rgba(255,255,255,0.06)", marginBottom: 20 }} />
-              <div style={{ fontSize: 16, fontWeight: 600, color: "#fff", marginBottom: 10 }}>{s.title}</div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.38)", lineHeight: 1.7 }}>{s.body}</div>
+            { label: "Integration surface", value: "1 endpoint", note: "GET /swap/approval handles the full cross-chain + swap flow" },
+            { label: "Typical time to production", value: "Hours", note: "Most teams are live same day. Complex frontend integrations in days." },
+            { label: "Prerequisites", value: "None", note: "No SDK, no contract deployment, no registration. Public API." },
+          ].map((item, i) => (
+            <div key={i} style={{ padding: "24px 28px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12 }}>
+              <div style={{ fontSize: 10, fontFamily: "monospace", color: "rgba(255,255,255,0.25)", letterSpacing: 2, marginBottom: 12 }}>{item.label.toUpperCase()}</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: "#5BF3A0", letterSpacing: "-0.5px", marginBottom: 10 }}>{item.value}</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}>{item.note}</div>
             </div>
           ))}
         </div>
+
+        <a href="https://docs.across.to/" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(91,243,160,0.06)", border: "1px solid rgba(91,243,160,0.2)", color: "#5BF3A0", fontWeight: 600, fontSize: 14, padding: "12px 24px", borderRadius: 10, textDecoration: "none" }}>
+          Read the integration docs
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+        </a>
       </section>
 
       {/* ── CTA ── */}
