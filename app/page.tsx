@@ -190,12 +190,10 @@ export default function Home() {
                   green: true,
                 },
               ].map((s, i) => (
-                <div key={i} style={{ padding: "20px 24px", background: "rgba(255,255,255,0.03)", border: `1px solid ${s.orange ? "rgba(255,140,32,0.2)" : s.green ? "rgba(91,243,160,0.2)" : "rgba(255,255,255,0.06)"}`, borderRadius: 12, display: "flex", alignItems: "center", gap: 20 }}>
-                  <div style={{ fontSize: 36, fontWeight: 800, color: s.orange ? "#FF8C20" : s.green ? "#5BF3A0" : "rgba(255,255,255,0.25)", letterSpacing: "-1px", fontVariantNumeric: "tabular-nums", minWidth: 64, lineHeight: 1 }}>{s.n}</div>
-                  <div>
-                    <div style={{ fontSize: 13, color: s.orange ? "rgba(255,255,255,0.8)" : s.green ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.4)", lineHeight: 1.5, marginBottom: 4 }}>{s.label}</div>
-                    <div style={{ fontSize: 10, fontFamily: "monospace", color: "rgba(255,255,255,0.2)", letterSpacing: 1 }}>{s.src}</div>
-                  </div>
+                <div key={i} style={{ padding: "20px 24px", background: "rgba(255,255,255,0.03)", border: `1px solid ${s.orange ? "rgba(255,140,32,0.2)" : s.green ? "rgba(91,243,160,0.2)" : "rgba(255,255,255,0.06)"}`, borderRadius: 12 }}>
+                  <div style={{ fontSize: 40, fontWeight: 800, color: s.orange ? "#FF8C20" : s.green ? "#5BF3A0" : "rgba(255,255,255,0.25)", letterSpacing: "-1px", fontVariantNumeric: "tabular-nums", lineHeight: 1, marginBottom: 10 }}>{s.n}</div>
+                  <div style={{ fontSize: 13, color: s.orange ? "rgba(255,255,255,0.8)" : s.green ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.4)", lineHeight: 1.5, marginBottom: 6 }}>{s.label}</div>
+                  <div style={{ fontSize: 10, fontFamily: "monospace", color: "rgba(255,255,255,0.2)", letterSpacing: 1 }}>{s.src}</div>
                 </div>
               ))}
             </div>
@@ -296,9 +294,12 @@ export default function Home() {
             Open live demo
             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", fontSize: 13, padding: "12px 24px", borderRadius: 10, fontFamily: "monospace" }}>
-            Confirmed on-chain · tx: 0xfc1977fe...cfa1
-          </div>
+          <a href="https://etherscan.io/tx/0xfc1977fe5c69b2886f0c9480aa24cdf1af3ac4b62ba283c079ef79cfda69cfa1" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)", fontSize: 13, padding: "12px 24px", borderRadius: 10, fontFamily: "monospace", textDecoration: "none", overflow: "hidden", maxWidth: "100%" }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(91,243,160,0.3)")}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
+          >
+            Confirmed on-chain · tx: 0xfc1977fe...cfa1 ↗
+          </a>
         </div>
       </section>
 
