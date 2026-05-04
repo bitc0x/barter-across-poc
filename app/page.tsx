@@ -19,7 +19,7 @@ const PITCH = [
   {
     tag: "The moat",
     title: "A security story your competitors cannot replicate.",
-    body: "Relay and other bridges have lock-and-mint exposure and a combined $2.9B in industry exploits. Across has never been exploited across $35B+ bridged. Adding Across gives Barter a verifiable, differentiated security guarantee built into the product.",
+    body: "Most crosschain bridges use lock-and-mint mechanics, creating custodial risk and a combined $2.9B in industry exploits. Across has never been exploited across $35B+ bridged. Adding Across gives Barter a verifiable, differentiated security guarantee built into the product.",
     accent: "blue",
   },
 ];
@@ -136,7 +136,7 @@ export default function Home() {
           <div className="text-xs font-mono text-barter-orange tracking-widest uppercase mb-3">The partnership</div>
           <h2 className="text-4xl font-bold text-barter-text mb-4">Three reasons. One integration.</h2>
           <p className="text-barter-sub text-lg max-w-2xl">
-            Barter becomes the only DEX aggregator where users can source, bridge, and execute across any chain without leaving the interface.
+            Barter users stay inside Barter. Every chain, every token, one interface.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-4">
