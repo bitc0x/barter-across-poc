@@ -60,6 +60,7 @@ export default function SwapPage() {
   const [txHash, setTxHash] = useState<string | null>(null);
   const [txLinkReady, setTxLinkReady] = useState(false);
   const [preTxBalance, setPreTxBalance] = useState<string | null>(null);
+  const [txSubmittedAt, setTxSubmittedAt] = useState<number | null>(null);
   const clearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const linkRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -119,15 +120,21 @@ export default function SwapPage() {
 
   // Watch for balance increase on dest - mark link ready immediately when fill detected
   useEffect(() => {
-    if (!txHash || txLinkReady || !preTxBalance) return;
+    if (!txHash || txLinkReady || preTxBalance === null || !txSubmittedAt) return;
+    // Don't check until at least 4s after submission (avoids false positive on first poll)
+    if (Date.now() - txSubmittedAt < 4000) return;
     const currentRaw = isNativeDest
       ? destNativeBal?.value?.toString() ?? null
       : (destErc20Bal?.[0]?.result as bigint | undefined)?.toString() ?? null;
-    if (currentRaw && BigInt(currentRaw) > BigInt(preTxBalance)) {
+    if (!currentRaw) return;
+    const prev = BigInt(preTxBalance);
+    const curr = BigInt(currentRaw);
+    // Only trigger if balance increased AND the increase is meaningful (> 1000 raw units)
+    if (curr > prev && curr - prev > BigInt(1000)) {
       setTxLinkReady(true);
       if (linkRef.current) clearTimeout(linkRef.current);
     }
-  }, [txHash, txLinkReady, preTxBalance, isNativeDest, destNativeBal, destErc20Bal]);
+  }, [txHash, txLinkReady, preTxBalance, txSubmittedAt, isNativeDest, destNativeBal, destErc20Bal]);
 
   // Stable list of unique ERC20 tokens to query - memoized so contracts array
   // identity is stable and useReadContracts doesn't re-fire on every render
@@ -295,11 +302,14 @@ export default function SwapPage() {
       setCcError("Quote expired. Enter amount again for a fresh quote.");
       return;
     }
-    // Snapshot current dest balance so we can detect the fill
+    // Snapshot current dest balance right before submitting
+    // Read directly from the fast-poll hook result (most recent value)
     const snapRaw = isNativeDest
       ? destNativeBal?.value?.toString() ?? "0"
       : (destErc20Bal?.[0]?.result as bigint | undefined)?.toString() ?? "0";
     setPreTxBalance(snapRaw);
+    // Small delay before polling starts to avoid false positive on first read
+    setTimeout(() => {}, 3000);
     const tx = ccQuote.swapTx;
     sendTransaction({
       to: tx.to as `0x${string}`,
@@ -309,15 +319,24 @@ export default function SwapPage() {
     }, {
       onSuccess: (hash) => {
         setTxHash(hash);
-        // Auto-clear after 6 seconds - clean UX, user can click the link before it goes
+        setTxSubmittedAt(Date.now());
+        setTxLinkReady(false);
+        // Link becomes ready when dest balance increases (see useEffect)
+        // Fallback: show after 25s regardless
+        if (linkRef.current) clearTimeout(linkRef.current);
+        linkRef.current = setTimeout(() => setTxLinkReady(true), 25000);
+        // Auto-clear after 75s
         if (clearRef.current) clearTimeout(clearRef.current);
         clearRef.current = setTimeout(() => {
           setTxHash(null);
+          setTxLinkReady(false);
+          setPreTxBalance(null);
+          setTxSubmittedAt(null);
           setCcAmount("");
           setCcQuote(null);
           setCcState("idle");
           resetTx();
-        }, 60000); // 60s - enough time to click Etherscan link in a demo
+        }, 75000);
       },
     });
   }
