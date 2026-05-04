@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useAccount, useSendTransaction, useBalance, useReadContracts, useChainId } from "wagmi";
 import { ConnectButton, useConnectModal } from "@rainbow-me/rainbowkit";
 import { BarterLogoMark, AcrossLogoMark } from "@/components/Logos";
@@ -20,6 +20,7 @@ interface CCQuote {
   feeTotalUsd: string;
   fillTimeSec: number;
   swapTx: SwapQuote["swapTx"];
+  fetchedAt: number; // ms timestamp for expiry check
 }
 
 // ── Token colors - exact match to barterswap.xyz screenshots ─────────
@@ -55,7 +56,7 @@ export default function SwapPage() {
   const { openConnectModal } = useConnectModal();
   const chainId = useChainId();
 
-  const { sendTransaction, isPending: isTxPending, isSuccess: isTxSuccess, error: txError } = useSendTransaction();
+  const { sendTransaction, reset: resetTx, isPending: isTxPending, isSuccess: isTxSuccess, error: txError } = useSendTransaction();
   const [txHash, setTxHash] = useState<string | null>(null);
   const clearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -82,20 +83,33 @@ export default function SwapPage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Balance fetching ───────────────────────────────────────────────
-  // Native ETH balance on connected chain
-  const { data: nativeBalance } = useBalance({
+  // Native ETH - fetch on chain 1 (Ethereum) always for same-chain tab,
+  // and also on the origin chain for cross-chain tab
+  const { data: ethBalance } = useBalance({
     address: address as `0x${string}` | undefined,
-    query: { enabled: !!address, refetchInterval: 10000 },
+    chainId: 1,
+    query: { enabled: !!address, refetchInterval: 12000 },
+  });
+  const { data: nativeOriginBalance } = useBalance({
+    address: address as `0x${string}` | undefined,
+    chainId: originChain?.chainId,
+    query: { enabled: !!address && !!originChain, refetchInterval: 12000 },
   });
 
-  // ERC20 balances for displayed tokens (up to 6 tokens at once)
-  const erc20Tokens = [scSell, scBuy, sellToken, buyToken].filter(
-    t => t && t.address !== "0x0000000000000000000000000000000000000000"
-  ) as import("@/lib/across").TokenInfo[];
-
-  const uniqueErc20 = erc20Tokens.filter(
-    (t, i, arr) => arr.findIndex(x => x.address.toLowerCase() === t.address.toLowerCase() && x.chainId === t.chainId) === i
-  ).slice(0, 6);
+  // Stable list of unique ERC20 tokens to query - memoized so contracts array
+  // identity is stable and useReadContracts doesn't re-fire on every render
+  const uniqueErc20 = useMemo(() => {
+    const all = [scSell, scBuy, sellToken, buyToken].filter(
+      (t): t is import("@/lib/across").TokenInfo =>
+        !!t && t.address !== "0x0000000000000000000000000000000000000000"
+    );
+    return all.filter(
+      (t, i, arr) =>
+        arr.findIndex(
+          x => x.address.toLowerCase() === t.address.toLowerCase() && x.chainId === t.chainId
+        ) === i
+    ).slice(0, 8);
+  }, [scSell, scBuy, sellToken, buyToken]);
 
   const { data: erc20Results } = useReadContracts({
     contracts: uniqueErc20.map(t => ({
@@ -111,24 +125,41 @@ export default function SwapPage() {
       args: [address as `0x${string}`],
       chainId: t.chainId,
     })),
-    query: { enabled: !!address && uniqueErc20.length > 0, refetchInterval: 10000 },
+    query: { enabled: !!address && uniqueErc20.length > 0, refetchInterval: 12000 },
   });
 
-  // Helper: get formatted balance for a token
+  // Format a balance value cleanly
+  function fmtBal(val: number): string {
+    if (val === 0) return "0.00";
+    if (val < 0.0001) return "<0.0001";
+    if (val >= 1000) return val.toLocaleString("en-US", { maximumFractionDigits: 2 });
+    if (val >= 1) return val.toFixed(4);
+    return val.toFixed(6).replace(/0+$/, "").replace(/\.$/, "");
+  }
+
+  // Get formatted balance for any token
   function getTokenBalance(token: import("@/lib/across").TokenInfo | null): string {
     if (!address || !token) return "0.00";
     const isNative = token.address === "0x0000000000000000000000000000000000000000";
-    if (isNative && nativeBalance && token.chainId === chainId) {
-      const val = parseFloat(nativeBalance.formatted);
-      return val === 0 ? "0.00" : val < 0.0001 ? "<0.0001" : val.toFixed(4);
+    if (isNative) {
+      const bal = token.chainId === 1 ? ethBalance
+        : token.chainId === originChain?.chainId ? nativeOriginBalance
+        : null;
+      if (!bal) return "0.00";
+      return fmtBal(parseFloat(bal.formatted));
     }
     const idx = uniqueErc20.findIndex(
-      t => t.address.toLowerCase() === token.address.toLowerCase() && t.chainId === token.chainId
+      u => u.address.toLowerCase() === token.address.toLowerCase() && u.chainId === token.chainId
     );
-    if (idx === -1 || !erc20Results?.[idx]?.result) return "0.00";
-    const raw = erc20Results[idx].result as bigint;
-    const val = Number(raw) / Math.pow(10, token.decimals);
-    return val === 0 ? "0.00" : val < 0.0001 ? "<0.0001" : val > 1000 ? val.toLocaleString("en-US", { maximumFractionDigits: 2 }) : val.toFixed(4);
+    if (idx === -1) return "0.00";
+    const result = erc20Results?.[idx];
+    if (!result || result.status !== "success" || result.result == null) return "0.00";
+    const raw = result.result as bigint;
+    // Safe decimal conversion avoiding float precision issues
+    const divisor = BigInt(10 ** Math.min(token.decimals, 15));
+    const whole = raw / divisor;
+    const val = Number(whole) / Math.pow(10, Math.min(token.decimals, 15));
+    return fmtBal(val);
   }
 
   // Pickers
@@ -175,6 +206,7 @@ export default function SwapPage() {
   // Debounced quote fetch using Swap API
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    resetTx(); // clear Rejected/Success state when user edits amount
     const amount = parseFloat(ccAmount);
     if (!amount || amount <= 0 || !sellToken || !buyToken || !originChain || !destChain) return;
 
@@ -204,6 +236,7 @@ export default function SwapPage() {
           feeTotalUsd: parseFloat(data.fees.total.amountUsd).toFixed(2),
           fillTimeSec: data.expectedFillTime,
           swapTx: data.swapTx,
+          fetchedAt: Date.now(),
         });
         setCcState("success");
       } catch (e) {
@@ -215,6 +248,13 @@ export default function SwapPage() {
 
   function executeSwap() {
     if (!ccQuote?.swapTx || !isConnected) return;
+    // Quotes expire - refresh if older than 25 seconds
+    if (Date.now() - ccQuote.fetchedAt > 25000) {
+      setCcState("idle");
+      setCcQuote(null);
+      setCcError("Quote expired. Enter amount again for a fresh quote.");
+      return;
+    }
     const tx = ccQuote.swapTx;
     sendTransaction({
       to: tx.to as `0x${string}`,
@@ -231,6 +271,7 @@ export default function SwapPage() {
           setCcAmount("");
           setCcQuote(null);
           setCcState("idle");
+          resetTx();
         }, 6000);
       },
     });
